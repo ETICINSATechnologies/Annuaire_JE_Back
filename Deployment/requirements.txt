@@ -1,0 +1,7 @@
+psycopg2
+sqlalchemy
+Flask
+flask_cors
+colorama
+PyYAML
+uwsgi

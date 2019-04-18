@@ -1,0 +1,195 @@
+[INFO] 2019-04-19 00:12:32,524 : select version()
+[INFO] 2019-04-19 00:12:32,525 : {}
+[INFO] 2019-04-19 00:12:32,527 : select current_schema()
+[INFO] 2019-04-19 00:12:32,527 : {}
+[INFO] 2019-04-19 00:12:32,528 : SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+[INFO] 2019-04-19 00:12:32,528 : {}
+[INFO] 2019-04-19 00:12:32,529 : SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+[INFO] 2019-04-19 00:12:32,529 : {}
+[INFO] 2019-04-19 00:12:32,529 : show standard_conforming_strings
+[INFO] 2019-04-19 00:12:32,530 : {}
+[INFO] 2019-04-19 00:12:32,531 : BEGIN (implicit)
+[INFO] 2019-04-19 00:12:32,532 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".username = %(username_1)s
+[INFO] 2019-04-19 00:12:32,532 : {'username_1': 'lucie.connor'}
+[INFO] 2019-04-19 00:12:32,581 : COMMIT
+[INFO] 2019-04-19 00:12:44,620 : BEGIN (implicit)
+[INFO] 2019-04-19 00:12:44,621 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".username = %(username_1)s
+[INFO] 2019-04-19 00:12:44,621 : {'username_1': 'admin'}
+[INFO] 2019-04-19 00:12:44,686 : COMMIT
+NFO] 2019-04-19 00:11:44,265 : COMMIT
+[INFO] 2019-04-19 00:11:44,271 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-19 00:11:44,272 : {'name': 'user'}
+[INFO] 2019-04-19 00:11:44,272 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-19 00:11:44,273 : {'name': 'member'}
+[INFO] 2019-04-19 00:11:44,274 : 
+CREATE TABLE "user" (
+	id SERIAL NOT NULL, 
+	username VARCHAR NOT NULL, 
+	password VARCHAR NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (username)
+)
+
+
+[INFO] 2019-04-19 00:11:44,274 : {}
+[INFO] 2019-04-19 00:11:44,295 : COMMIT
+[INFO] 2019-04-19 00:11:44,298 : 
+CREATE TABLE member (
+	id INTEGER NOT NULL, 
+	"firstName" VARCHAR NOT NULL, 
+	"lastName" VARCHAR NOT NULL, 
+	email VARCHAR NOT NULL, 
+	birthday VARCHAR, 
+	"gradeYear" INTEGER, 
+	telephone VARCHAR, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(id) REFERENCES "user" (id), 
+	UNIQUE (email)
+)
+
+
+[INFO] 2019-04-19 00:11:44,298 : {}
+[INFO] 2019-04-19 00:11:44,321 : COMMIT
+[INFO] 2019-04-19 00:11:44,365 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,367 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
+[INFO] 2019-04-19 00:11:44,367 : {'username': 'admin', 'password': '$pbkdf2-sha256$29000$gFCqlfIeA0AIodRay9n7Xw$JPl711gR/u905a4Bt.hg1qb5LsQvIG/reDtRlkm4QBo'}
+[INFO] 2019-04-19 00:11:44,369 : COMMIT
+[INFO] 2019-04-19 00:11:44,438 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,438 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
+[INFO] 2019-04-19 00:11:44,439 : {'username': 'john.connor', 'password': '$pbkdf2-sha256$29000$rrVWitGa03rPmROidK4Vog$CYZ0/GSFols42S/4rJUQP8pFRqFiBIFou00VInxxqOM'}
+[INFO] 2019-04-19 00:11:44,440 : INSERT INTO member (id, "firstName", "lastName", email, birthday, "gradeYear", telephone) VALUES (%(id)s, %(firstName)s, %(lastName)s, %(email)s, %(birthday)s, %(gradeYear)s, %(telephone)s)
+[INFO] 2019-04-19 00:11:44,441 : {'id': 2, 'firstName': 'John', 'lastName': 'Connor', 'email': 'john.connor@terminator.com', 'birthday': '1967-01-20', 'gradeYear': 3, 'telephone': 116316425}
+[INFO] 2019-04-19 00:11:44,443 : COMMIT
+[INFO] 2019-04-19 00:11:44,446 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,447 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,447 : {'param_1': 2}
+[INFO] 2019-04-19 00:11:44,450 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,451 : {'param_1': 2}
+[INFO] 2019-04-19 00:11:44,451 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,509 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,510 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
+[INFO] 2019-04-19 00:11:44,510 : {'username': 'lucie.connor', 'password': '$pbkdf2-sha256$29000$EkJIae19D2EsBQDgfI9xjg$FyaaQ0vcyTYMl.dYnYP77I804LzZO4iOtNEWwlFebk0'}
+[INFO] 2019-04-19 00:11:44,511 : INSERT INTO member (id, "firstName", "lastName", email, birthday, "gradeYear", telephone) VALUES (%(id)s, %(firstName)s, %(lastName)s, %(email)s, %(birthday)s, %(gradeYear)s, %(telephone)s)
+[INFO] 2019-04-19 00:11:44,511 : {'id': 3, 'firstName': 'Lucie', 'lastName': 'Connor', 'email': 'lucie.connor@terminator.com', 'birthday': '1967-01-20', 'gradeYear': 3, 'telephone': 116316425}
+[INFO] 2019-04-19 00:11:44,512 : COMMIT
+[INFO] 2019-04-19 00:11:44,513 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,515 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,515 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,517 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,517 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,518 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,520 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,521 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member
+[INFO] 2019-04-19 00:11:44,521 : {}
+[INFO] 2019-04-19 00:11:44,523 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,523 : {'param_1': 2}
+[INFO] 2019-04-19 00:11:44,525 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,525 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,526 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,528 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,529 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member
+[INFO] 2019-04-19 00:11:44,529 : {}
+[INFO] 2019-04-19 00:11:44,531 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,531 : {'param_1': 2}
+[INFO] 2019-04-19 00:11:44,533 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,533 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,535 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,537 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,538 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member."firstName" = %(firstName_1)s
+[INFO] 2019-04-19 00:11:44,538 : {'firstName_1': 'John'}
+[INFO] 2019-04-19 00:11:44,541 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,541 : {'param_1': 2}
+[INFO] 2019-04-19 00:11:44,542 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,543 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,544 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(id_1)s
+[INFO] 2019-04-19 00:11:44,544 : {'id_1': 3}
+[INFO] 2019-04-19 00:11:44,546 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,547 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,548 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,549 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,550 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(id_1)s
+[INFO] 2019-04-19 00:11:44,551 : {'id_1': -1}
+[INFO] 2019-04-19 00:11:44,552 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,554 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,555 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(id_1)s
+[INFO] 2019-04-19 00:11:44,555 : {'id_1': 2}
+[INFO] 2019-04-19 00:11:44,557 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,557 : {'param_1': 2}
+[INFO] 2019-04-19 00:11:44,559 : DELETE FROM member WHERE member.id = %(id)s
+[INFO] 2019-04-19 00:11:44,560 : {'id': 2}
+[INFO] 2019-04-19 00:11:44,561 : DELETE FROM "user" WHERE "user".id = %(id)s
+[INFO] 2019-04-19 00:11:44,561 : {'id': 2}
+[INFO] 2019-04-19 00:11:44,563 : COMMIT
+[INFO] 2019-04-19 00:11:44,565 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,566 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(id_1)s
+[INFO] 2019-04-19 00:11:44,566 : {'id_1': 2}
+[INFO] 2019-04-19 00:11:44,568 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,569 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,570 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member
+[INFO] 2019-04-19 00:11:44,571 : {}
+[INFO] 2019-04-19 00:11:44,572 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,573 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,574 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,576 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,578 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member."firstName" = %(firstName_1)s
+[INFO] 2019-04-19 00:11:44,578 : {'firstName_1': 'John'}
+[INFO] 2019-04-19 00:11:44,579 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,580 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,581 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(id_1)s
+[INFO] 2019-04-19 00:11:44,582 : {'id_1': 3}
+[INFO] 2019-04-19 00:11:44,584 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".id = %(param_1)s
+[INFO] 2019-04-19 00:11:44,584 : {'param_1': 3}
+[INFO] 2019-04-19 00:11:44,586 : ROLLBACK
+[INFO] 2019-04-19 00:11:44,588 : BEGIN (implicit)
+[INFO] 2019-04-19 00:11:44,589 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
+FROM member 
+WHERE member.id = %(id_1)s
+[INFO] 2019-04-19 00:11:44,589 : {'id_1': -1}
+[INFO] 2019-04-19 00:11:44,591 : ROLLBACK
