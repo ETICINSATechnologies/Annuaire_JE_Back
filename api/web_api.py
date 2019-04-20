@@ -4,22 +4,28 @@
 import sqlalchemy.exc
 import sqlalchemy.orm
 
-from flask import Flask, send_from_directory, request, safe_join
+from flask import Flask, send_from_directory, request
 from flask.json import jsonify
 from flask_cors import CORS
 
+from controller.Controller import Controller
 from controller.MemberController import MemberController
-from util.Exception import LoginException
 from util.upload import *
+from util.Exception import *
+from util.encryption import *
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 CORS(app)
 
 
-def send_response(old_function):
+def send_response(old_function, authorization_function=None,
+                  authorization=None, resource_id=None):
     def new_function(*args, **kwargs):
         try:
+            if authorization_function:
+                authorization_function(authorization, resource_id)
+
             return jsonify(old_function(*args, **kwargs))
         except sqlalchemy.exc.IntegrityError:
             return 'integrity error', 422
@@ -27,16 +33,50 @@ def send_response(old_function):
             return 'no result found', 204
         except LoginException:
             return 'authentication failed', 401
+        except FormatError:
+            return 'incorrect file', 423
+        except AuthError:
+            return 'permission denied', 403
         except Exception as e:
             print(e)
             info_logger.error(e)
-            return "unexpected error", 500
+
+        return "unexpected error", 500
 
     return new_function
 
 
+def is_connected(*args):
+    jwt = args[0]
+
+    if jwt:
+        payload = jwt_decode(jwt)
+        if payload:
+            return payload
+
+    raise AuthError
+
+
+def is_own_resource(*args):
+    jwt = args[0]
+    resource_id = args[1]
+
+    payload = is_connected(jwt)
+    if payload['username'] != 'admin' and payload['id'] != resource_id:
+        raise AuthError
+
+
+def is_admin(*args):
+    jwt = args[0]
+
+    payload = is_connected(jwt)
+    if payload['username'] != 'admin':
+        raise AuthError
+
+
 @app.route('/')
 def index():
+    print(is_connected(request.headers))
     return ''' 
     <!doctype html>  
     <html>  
@@ -87,24 +127,77 @@ def get_member(member_id):
 def update_member(member_id):
     return send_response(
         lambda:
-        MemberController.update_member(member_id, request.get_json())
+        MemberController.update_member(member_id, request.get_json()),
+        is_own_resource, request.headers.get('Authorization'), member_id
     )()
 
 
 @app.route('/member/<int:member_id>', methods=['DELETE'])
 def delete_member(member_id):
     return send_response(
-        lambda:
-        MemberController.delete_member(member_id)
+        lambda: MemberController.delete_member(member_id),
+        is_admin, request.headers.get('Authorization')
     )()
 
 
-@app.route('/uploadFile/<int:doc_id>', methods=['GET', 'POST'])
-def upload_file(doc_id):
+@app.route('/member/<int:member_id>/image', methods=['GET', 'POST'])
+def update_profile_picture(member_id):
     if request.method == 'POST':
-        if request.files.get('file'):
-            file = request.files['file']
-            save_file(doc_id, file)
+        try:
+            if request.files.get('file'):
+                file = request.files['file']
+                save_file(file, member_id)
+                Controller.import_data()
+                return 'Success'
+        except Exception as e:
+            info_logger.error(e)
+
+        return "unexpected error", 500
+
+    return '''
+        <!doctype html>
+        <title>Upload new File</title>
+        <h1>Upload new File</h1>
+        <form method=post enctype=multipart/form-data>
+          <p><input type=file name=file>
+             <input type=submit value=Upload>
+        </form>
+        '''
+
+
+@app.route('/member/<int:member_id>/get_image', methods=['GET'])
+def get_image(member_id):
+    file = find_image(member_id)
+    if file:
+        return send_from_directory(
+            safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
+            file
+        )
+    return 'not found', 404
+
+
+@app.route('/position', methods=['GET'])
+def get_position():
+    return send_response(
+        lambda: MemberController.get_positions()
+    )()
+
+
+@app.route('/uploadData', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        try:
+            if request.files.get('file'):
+                file = request.files['file']
+                save_file(file)
+                Controller.import_data()
+                return 'Success'
+        except FormatError:
+            return 'incorrect file', 423
+        except Exception as e:
+            info_logger.error(e)
+
+        return "unexpected error", 500
 
     return '''
     <!doctype html>
@@ -117,10 +210,13 @@ def upload_file(doc_id):
     '''
 
 
-@app.route('/getFile/<filename>')
-def get_uploaded_file(filename):
+@app.route('/download/annuaire', methods=['GET'])
+def download():
+    Controller.export_data()
     return send_from_directory(
-        safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']), filename)
+        safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
+        'annuaire.xlsx'
+    )
 
 
 if __name__ == '__main__':

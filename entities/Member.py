@@ -5,10 +5,10 @@ import unicodedata
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 
+from entities.MemberPosition import MemberPosition
 from entities.User import User
 from util.db_config import Base
 from util.serialize import serialize
-from util.encryption import encrypt
 
 
 class Member(Base):
@@ -21,11 +21,18 @@ class Member(Base):
     birthday = Column(String)
     gradeYear = Column(Integer)
     telephone = Column(String)
+    gender = Column(String)
+    facebook = Column(String)
+    linkedin = Column(String)
+    company = Column(String)
 
     user = relationship("User",
                         uselist=False,  # one instance only
                         cascade="all, delete-orphan",
                         single_parent=True)
+
+    positions = relationship('MemberPosition',
+                             cascade="all, delete-orphan")
 
     def __init__(self):
         pass
@@ -38,16 +45,27 @@ class Member(Base):
             if hasattr(self, att_key):
                 setattr(self, att_key, att_val)
 
+        if self.user and 'password' in new_values:
+            self.user.update(new_values['password'])
+
+        return self
+
+    def create_user(self, password):
         username = f'{self.firstName.lower()}.{self.lastName.lower()}'
         username = unicodedata.normalize('NFD', username) \
             .encode('ascii', 'ignore')
 
         self.user = User(username.decode('utf-8'))
+        self.user.update(password)
 
-        if 'password' in new_values:
-            self.user.update(new_values['password'])
-
-        return self
+    def set_positions(self, positions):
+        self.positions = []
+        if positions:
+            for position in positions:
+                member_position = MemberPosition(
+                    position['id'], position['year']
+                )
+                self.positions.append(member_position)
 
     @classmethod
     def get_attr(cls, attr_name):
@@ -60,19 +78,14 @@ class Member(Base):
             i for i in dir(self)
             if not (i.startswith('_')
                     or callable(getattr(self, i))
-                    or i == "metadata")
+                    or i == "metadata" or i == 'user')
         }
 
     def serialize(self):
-        serialized_object = {}
+        serialized_object = {
+            'username': self.user.username
+        }
+
         for attr in self.get_all_attr():
             serialized_object[attr] = serialize(getattr(self, attr))
         return serialized_object
-
-
-if __name__ == "__main__":
-    m = Member()
-    m.update({
-        'firstName': 'Louis'
-    })
-    print(m)

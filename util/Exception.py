@@ -4,3 +4,11 @@
 
 class LoginException(Exception):
     pass
+
+
+class FormatError(Exception):
+    pass
+
+
+class AuthError(Exception):
+    pass

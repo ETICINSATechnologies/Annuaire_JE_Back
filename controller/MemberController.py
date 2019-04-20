@@ -6,6 +6,8 @@ import persistence_unit.PersistenceUnit as pUnit
 
 from entities.User import User
 from entities.Member import Member
+from entities.MemberPosition import MemberPosition
+from entities.Position import Position
 from util.Exception import LoginException
 from util.encryption import jwt_encode
 from util.encryption import is_password_valid
@@ -46,7 +48,11 @@ class MemberController:
     def create_member(session, *args):
         attributes = args[0]
         member = Member()
+        positions = attributes.pop('positions', None)
+        password = attributes.pop('password', None)
+        member.set_positions(positions)
         member.update(attributes)
+        member.create_user(password)
         session.add(member)
         return member
 
@@ -62,9 +68,9 @@ class MemberController:
     def get_members(session, *args):
         attributes = {}
         if len(args) > 0:
-            attributes = {key: args[0].get(key)
-                          for key in args[0].keys()
-                          if key != "password"}
+            attributes = {
+                key: args[0].get(key) for key in args[0].keys()
+            }
         return session.query(Member).filter_by(**attributes)
 
     @staticmethod
@@ -75,7 +81,11 @@ class MemberController:
 
         member = session.query(Member) \
             .filter(Member.id == member_id).one()
+
+        positions = attributes.pop('positions', None)
+        member.set_positions(positions)
         member.update(attributes)
+
         session.add(member)
 
         return member
@@ -87,3 +97,8 @@ class MemberController:
         member = session.query(Member).filter(
             Member.id == member_id).one()
         session.delete(member)
+
+    @staticmethod
+    @pUnit.make_a_transaction
+    def get_positions(session, *args):
+        return session.query(Position).all()

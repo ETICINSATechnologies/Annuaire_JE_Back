@@ -1,31 +1,46 @@
-[INFO] 2019-04-19 00:12:32,524 : select version()
-[INFO] 2019-04-19 00:12:32,525 : {}
-[INFO] 2019-04-19 00:12:32,527 : select current_schema()
-[INFO] 2019-04-19 00:12:32,527 : {}
-[INFO] 2019-04-19 00:12:32,528 : SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
-[INFO] 2019-04-19 00:12:32,528 : {}
-[INFO] 2019-04-19 00:12:32,529 : SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
-[INFO] 2019-04-19 00:12:32,529 : {}
-[INFO] 2019-04-19 00:12:32,529 : show standard_conforming_strings
-[INFO] 2019-04-19 00:12:32,530 : {}
-[INFO] 2019-04-19 00:12:32,531 : BEGIN (implicit)
-[INFO] 2019-04-19 00:12:32,532 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".username = %(username_1)s
-[INFO] 2019-04-19 00:12:32,532 : {'username_1': 'lucie.connor'}
-[INFO] 2019-04-19 00:12:32,581 : COMMIT
-[INFO] 2019-04-19 00:12:44,620 : BEGIN (implicit)
-[INFO] 2019-04-19 00:12:44,621 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".username = %(username_1)s
-[INFO] 2019-04-19 00:12:44,621 : {'username_1': 'admin'}
-[INFO] 2019-04-19 00:12:44,686 : COMMIT
-NFO] 2019-04-19 00:11:44,265 : COMMIT
-[INFO] 2019-04-19 00:11:44,271 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
-[INFO] 2019-04-19 00:11:44,272 : {'name': 'user'}
-[INFO] 2019-04-19 00:11:44,272 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
-[INFO] 2019-04-19 00:11:44,273 : {'name': 'member'}
-[INFO] 2019-04-19 00:11:44,274 : 
+[INFO] 2019-04-20 15:52:47,429 : select version()
+[INFO] 2019-04-20 15:52:47,429 : {}
+[INFO] 2019-04-20 15:52:47,433 : select current_schema()
+[INFO] 2019-04-20 15:52:47,434 : {}
+[INFO] 2019-04-20 15:52:47,436 : SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+[INFO] 2019-04-20 15:52:47,437 : {}
+[INFO] 2019-04-20 15:52:47,440 : SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+[INFO] 2019-04-20 15:52:47,440 : {}
+[INFO] 2019-04-20 15:52:47,441 : show standard_conforming_strings
+[INFO] 2019-04-20 15:52:47,441 : {}
+[INFO] 2019-04-20 15:52:47,443 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,443 : {'name': 'user'}
+[INFO] 2019-04-20 15:52:47,447 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,448 : {'name': 'member_position'}
+[INFO] 2019-04-20 15:52:47,449 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,450 : {'name': 'member'}
+[INFO] 2019-04-20 15:52:47,451 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,452 : {'name': 'position'}
+[INFO] 2019-04-20 15:52:47,454 : 
+DROP TABLE member_position
+[INFO] 2019-04-20 15:52:47,454 : {}
+[INFO] 2019-04-20 15:52:47,469 : COMMIT
+[INFO] 2019-04-20 15:52:47,475 : 
+DROP TABLE member
+[INFO] 2019-04-20 15:52:47,475 : {}
+[INFO] 2019-04-20 15:52:47,478 : COMMIT
+[INFO] 2019-04-20 15:52:47,496 : 
+DROP TABLE position
+[INFO] 2019-04-20 15:52:47,497 : {}
+[INFO] 2019-04-20 15:52:47,500 : COMMIT
+[INFO] 2019-04-20 15:52:47,505 : 
+DROP TABLE "user"
+[INFO] 2019-04-20 15:52:47,506 : {}
+[INFO] 2019-04-20 15:52:47,508 : COMMIT
+[INFO] 2019-04-20 15:52:47,543 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,544 : {'name': 'user'}
+[INFO] 2019-04-20 15:52:47,546 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,546 : {'name': 'member_position'}
+[INFO] 2019-04-20 15:52:47,549 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,549 : {'name': 'member'}
+[INFO] 2019-04-20 15:52:47,551 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,551 : {'name': 'position'}
+[INFO] 2019-04-20 15:52:47,553 : 
 CREATE TABLE "user" (
 	id SERIAL NOT NULL, 
 	username VARCHAR NOT NULL, 
@@ -35,9 +50,20 @@ CREATE TABLE "user" (
 )
 
 
-[INFO] 2019-04-19 00:11:44,274 : {}
-[INFO] 2019-04-19 00:11:44,295 : COMMIT
-[INFO] 2019-04-19 00:11:44,298 : 
+[INFO] 2019-04-20 15:52:47,553 : {}
+[INFO] 2019-04-20 15:52:47,594 : COMMIT
+[INFO] 2019-04-20 15:52:47,596 : 
+CREATE TABLE position (
+	id SERIAL NOT NULL, 
+	label VARCHAR NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (label)
+)
+
+
+[INFO] 2019-04-20 15:52:47,597 : {}
+[INFO] 2019-04-20 15:52:47,624 : COMMIT
+[INFO] 2019-04-20 15:52:47,625 : 
 CREATE TABLE member (
 	id INTEGER NOT NULL, 
 	"firstName" VARCHAR NOT NULL, 
@@ -46,150 +72,175 @@ CREATE TABLE member (
 	birthday VARCHAR, 
 	"gradeYear" INTEGER, 
 	telephone VARCHAR, 
+	gender VARCHAR, 
+	facebook VARCHAR, 
+	linkedin VARCHAR, 
+	company VARCHAR, 
 	PRIMARY KEY (id), 
 	FOREIGN KEY(id) REFERENCES "user" (id), 
 	UNIQUE (email)
 )
 
 
-[INFO] 2019-04-19 00:11:44,298 : {}
-[INFO] 2019-04-19 00:11:44,321 : COMMIT
-[INFO] 2019-04-19 00:11:44,365 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,367 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
-[INFO] 2019-04-19 00:11:44,367 : {'username': 'admin', 'password': '$pbkdf2-sha256$29000$gFCqlfIeA0AIodRay9n7Xw$JPl711gR/u905a4Bt.hg1qb5LsQvIG/reDtRlkm4QBo'}
-[INFO] 2019-04-19 00:11:44,369 : COMMIT
-[INFO] 2019-04-19 00:11:44,438 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,438 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
-[INFO] 2019-04-19 00:11:44,439 : {'username': 'john.connor', 'password': '$pbkdf2-sha256$29000$rrVWitGa03rPmROidK4Vog$CYZ0/GSFols42S/4rJUQP8pFRqFiBIFou00VInxxqOM'}
-[INFO] 2019-04-19 00:11:44,440 : INSERT INTO member (id, "firstName", "lastName", email, birthday, "gradeYear", telephone) VALUES (%(id)s, %(firstName)s, %(lastName)s, %(email)s, %(birthday)s, %(gradeYear)s, %(telephone)s)
-[INFO] 2019-04-19 00:11:44,441 : {'id': 2, 'firstName': 'John', 'lastName': 'Connor', 'email': 'john.connor@terminator.com', 'birthday': '1967-01-20', 'gradeYear': 3, 'telephone': 116316425}
-[INFO] 2019-04-19 00:11:44,443 : COMMIT
-[INFO] 2019-04-19 00:11:44,446 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,447 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,447 : {'param_1': 2}
-[INFO] 2019-04-19 00:11:44,450 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,451 : {'param_1': 2}
-[INFO] 2019-04-19 00:11:44,451 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,509 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,510 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
-[INFO] 2019-04-19 00:11:44,510 : {'username': 'lucie.connor', 'password': '$pbkdf2-sha256$29000$EkJIae19D2EsBQDgfI9xjg$FyaaQ0vcyTYMl.dYnYP77I804LzZO4iOtNEWwlFebk0'}
-[INFO] 2019-04-19 00:11:44,511 : INSERT INTO member (id, "firstName", "lastName", email, birthday, "gradeYear", telephone) VALUES (%(id)s, %(firstName)s, %(lastName)s, %(email)s, %(birthday)s, %(gradeYear)s, %(telephone)s)
-[INFO] 2019-04-19 00:11:44,511 : {'id': 3, 'firstName': 'Lucie', 'lastName': 'Connor', 'email': 'lucie.connor@terminator.com', 'birthday': '1967-01-20', 'gradeYear': 3, 'telephone': 116316425}
-[INFO] 2019-04-19 00:11:44,512 : COMMIT
-[INFO] 2019-04-19 00:11:44,513 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,515 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,515 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,517 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,517 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,518 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,520 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,521 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member
-[INFO] 2019-04-19 00:11:44,521 : {}
-[INFO] 2019-04-19 00:11:44,523 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,523 : {'param_1': 2}
-[INFO] 2019-04-19 00:11:44,525 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,525 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,526 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,528 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,529 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member
-[INFO] 2019-04-19 00:11:44,529 : {}
-[INFO] 2019-04-19 00:11:44,531 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,531 : {'param_1': 2}
-[INFO] 2019-04-19 00:11:44,533 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,533 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,535 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,537 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,538 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member."firstName" = %(firstName_1)s
-[INFO] 2019-04-19 00:11:44,538 : {'firstName_1': 'John'}
-[INFO] 2019-04-19 00:11:44,541 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,541 : {'param_1': 2}
-[INFO] 2019-04-19 00:11:44,542 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,543 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,544 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(id_1)s
-[INFO] 2019-04-19 00:11:44,544 : {'id_1': 3}
-[INFO] 2019-04-19 00:11:44,546 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,547 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,548 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,549 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,550 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(id_1)s
-[INFO] 2019-04-19 00:11:44,551 : {'id_1': -1}
-[INFO] 2019-04-19 00:11:44,552 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,554 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,555 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(id_1)s
-[INFO] 2019-04-19 00:11:44,555 : {'id_1': 2}
-[INFO] 2019-04-19 00:11:44,557 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,557 : {'param_1': 2}
-[INFO] 2019-04-19 00:11:44,559 : DELETE FROM member WHERE member.id = %(id)s
-[INFO] 2019-04-19 00:11:44,560 : {'id': 2}
-[INFO] 2019-04-19 00:11:44,561 : DELETE FROM "user" WHERE "user".id = %(id)s
-[INFO] 2019-04-19 00:11:44,561 : {'id': 2}
-[INFO] 2019-04-19 00:11:44,563 : COMMIT
-[INFO] 2019-04-19 00:11:44,565 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,566 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(id_1)s
-[INFO] 2019-04-19 00:11:44,566 : {'id_1': 2}
-[INFO] 2019-04-19 00:11:44,568 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,569 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,570 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member
-[INFO] 2019-04-19 00:11:44,571 : {}
-[INFO] 2019-04-19 00:11:44,572 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,573 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,574 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,576 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,578 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member."firstName" = %(firstName_1)s
-[INFO] 2019-04-19 00:11:44,578 : {'firstName_1': 'John'}
-[INFO] 2019-04-19 00:11:44,579 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,580 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,581 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(id_1)s
-[INFO] 2019-04-19 00:11:44,582 : {'id_1': 3}
-[INFO] 2019-04-19 00:11:44,584 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
-FROM "user" 
-WHERE "user".id = %(param_1)s
-[INFO] 2019-04-19 00:11:44,584 : {'param_1': 3}
-[INFO] 2019-04-19 00:11:44,586 : ROLLBACK
-[INFO] 2019-04-19 00:11:44,588 : BEGIN (implicit)
-[INFO] 2019-04-19 00:11:44,589 : SELECT member.id AS member_id, member."firstName" AS "member_firstName", member."lastName" AS "member_lastName", member.email AS member_email, member.birthday AS member_birthday, member."gradeYear" AS "member_gradeYear", member.telephone AS member_telephone 
-FROM member 
-WHERE member.id = %(id_1)s
-[INFO] 2019-04-19 00:11:44,589 : {'id_1': -1}
-[INFO] 2019-04-19 00:11:44,591 : ROLLBACK
+[INFO] 2019-04-20 15:52:47,625 : {}
+[INFO] 2019-04-20 15:52:47,661 : COMMIT
+[INFO] 2019-04-20 15:52:47,673 : 
+CREATE TABLE member_position (
+	id SERIAL NOT NULL, 
+	member_id INTEGER, 
+	position_id INTEGER, 
+	year INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(member_id) REFERENCES member (id), 
+	FOREIGN KEY(position_id) REFERENCES position (id) ON DELETE CASCADE
+)
+
+
+[INFO] 2019-04-20 15:52:47,673 : {}
+[INFO] 2019-04-20 15:52:47,689 : COMMIT
+[INFO] 2019-04-20 15:52:47,742 : BEGIN (implicit)
+[INFO] 2019-04-20 15:52:47,743 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
+[INFO] 2019-04-20 15:52:47,743 : {'username': 'admin', 'password': '$pbkdf2-sha256$29000$olTKuTemlFJKqfVeS4nRWg$/OGP1GmKO3rH46ENZMx7lQjNuWbhrE09I912UmD2SBo'}
+[INFO] 2019-04-20 15:52:47,748 : COMMIT
+[INFO] 2019-04-20 15:52:47,998 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:47,999 : {'name': 'position'}
+[INFO] 2019-04-20 15:52:48,000 : BEGIN (implicit)
+[INFO] 2019-04-20 15:52:48,001 : INSERT INTO position (label, id) VALUES (%(label)s, %(id)s)
+[INFO] 2019-04-20 15:52:48,001 : ({'label': 'président', 'id': 1}, {'label': 'trésorier', 'id': 2}, {'label': 'DSI', 'id': 3}, {'label': 'vice-président', 'id': 4}, {'label': 'vice-trésorier', 'id': 5})
+[INFO] 2019-04-20 15:52:48,004 : COMMIT
+[INFO] 2019-04-20 15:52:48,006 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:48,006 : {'name': 'user'}
+[INFO] 2019-04-20 15:52:48,008 : BEGIN (implicit)
+[INFO] 2019-04-20 15:52:48,009 : INSERT INTO "user" (id, username, password) VALUES (%(id)s, %(username)s, %(password)s)
+[INFO] 2019-04-20 15:52:48,009 : ({'id': 2, 'username': 'alang', 'password': '$pbkdf2-sha256$29000$u/e.l1Kq1VpLiVEqBSCkVA$eyiw0/XaKeCRlpx5xnKSlK.3KHtXC18Up4sBUda4yU8'}, {'id': 3, 'username': 'alouest', 'password': '$pbkdf2-sha256$29000$.b9X6n1PKcV4r3UOIcR47w$hy4vSahAzmzCEofLLB/QkSLjn.xbGcMHn27hloTwBRI'})
+[INFO] 2019-04-20 15:52:48,010 : COMMIT
+[INFO] 2019-04-20 15:52:48,016 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:48,016 : {'name': 'member'}
+[INFO] 2019-04-20 15:52:48,017 : BEGIN (implicit)
+[INFO] 2019-04-20 15:52:48,019 : INSERT INTO member (id, "firstName", "lastName", email, birthday, "gradeYear", telephone, gender, facebook, linkedin, company) VALUES (%(id)s, %(firstName)s, %(lastName)s, %(email)s, %(birthday)s, %(gradeYear)s, %(telephone)s, %(gender)s, %(facebook)s, %(linkedin)s, %(company)s)
+[INFO] 2019-04-20 15:52:48,019 : ({'id': 2, 'firstName': 'Lang', 'lastName': 'Alexandre', 'email': 'alang@gmail.com', 'birthday': '1996-11-11 00:00:00', 'gradeYear': 2020, 'telephone': 646759259, 'gender': 'M', 'facebook': None, 'linkedin': None, 'company': None}, {'id': 3, 'firstName': 'Lang', 'lastName': 'Alexandre', 'email': 'alouest@gmail.com', 'birthday': '1996-11-11 00:00:00', 'gradeYear': 2020, 'telephone': 646759259, 'gender': 'M', 'facebook': None, 'linkedin': None, 'company': None})
+[INFO] 2019-04-20 15:52:48,023 : COMMIT
+[INFO] 2019-04-20 15:52:48,025 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:52:48,025 : {'name': 'member_position'}
+[INFO] 2019-04-20 15:52:48,027 : BEGIN (implicit)
+[INFO] 2019-04-20 15:52:48,027 : INSERT INTO member_position (member_id, position_id, year) VALUES (%(member_id)s, %(position_id)s, %(year)s)
+[INFO] 2019-04-20 15:52:48,027 : ({'member_id': 2, 'position_id': 3, 'year': 2018.0}, {'member_id': 3, 'position_id': 4, 'year': 2013.0}, {'member_id': 2, 'position_id': 1, 'year': 2019.0}, {'member_id': 3, 'position_id': 2, 'year': 2017.0})
+[INFO] 2019-04-20 15:52:48,032 : COMMIT
+[INFO] 2019-04-20 15:53:28,309 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,310 : {'name': 'user'}
+[INFO] 2019-04-20 15:53:28,313 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,313 : {'name': 'member_position'}
+[INFO] 2019-04-20 15:53:28,314 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,315 : {'name': 'member'}
+[INFO] 2019-04-20 15:53:28,316 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,316 : {'name': 'position'}
+[INFO] 2019-04-20 15:53:28,317 : 
+DROP TABLE member_position
+[INFO] 2019-04-20 15:53:28,318 : {}
+[INFO] 2019-04-20 15:53:28,325 : COMMIT
+[INFO] 2019-04-20 15:53:28,342 : 
+DROP TABLE member
+[INFO] 2019-04-20 15:53:28,343 : {}
+[INFO] 2019-04-20 15:53:28,351 : COMMIT
+[INFO] 2019-04-20 15:53:28,357 : 
+DROP TABLE position
+[INFO] 2019-04-20 15:53:28,357 : {}
+[INFO] 2019-04-20 15:53:28,360 : COMMIT
+[INFO] 2019-04-20 15:53:28,388 : 
+DROP TABLE "user"
+[INFO] 2019-04-20 15:53:28,388 : {}
+[INFO] 2019-04-20 15:53:28,392 : COMMIT
+[INFO] 2019-04-20 15:53:28,401 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,402 : {'name': 'user'}
+[INFO] 2019-04-20 15:53:28,404 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,404 : {'name': 'member_position'}
+[INFO] 2019-04-20 15:53:28,407 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,407 : {'name': 'member'}
+[INFO] 2019-04-20 15:53:28,409 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,409 : {'name': 'position'}
+[INFO] 2019-04-20 15:53:28,412 : 
+CREATE TABLE "user" (
+	id SERIAL NOT NULL, 
+	username VARCHAR NOT NULL, 
+	password VARCHAR NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (username)
+)
+
+
+[INFO] 2019-04-20 15:53:28,412 : {}
+[INFO] 2019-04-20 15:53:28,447 : COMMIT
+[INFO] 2019-04-20 15:53:28,449 : 
+CREATE TABLE position (
+	id SERIAL NOT NULL, 
+	label VARCHAR NOT NULL, 
+	PRIMARY KEY (id), 
+	UNIQUE (label)
+)
+
+
+[INFO] 2019-04-20 15:53:28,449 : {}
+[INFO] 2019-04-20 15:53:28,487 : COMMIT
+[INFO] 2019-04-20 15:53:28,489 : 
+CREATE TABLE member (
+	id INTEGER NOT NULL, 
+	"firstName" VARCHAR NOT NULL, 
+	"lastName" VARCHAR NOT NULL, 
+	email VARCHAR NOT NULL, 
+	birthday VARCHAR, 
+	"gradeYear" INTEGER, 
+	telephone VARCHAR, 
+	gender VARCHAR, 
+	facebook VARCHAR, 
+	linkedin VARCHAR, 
+	company VARCHAR, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(id) REFERENCES "user" (id), 
+	UNIQUE (email)
+)
+
+
+[INFO] 2019-04-20 15:53:28,489 : {}
+[INFO] 2019-04-20 15:53:28,540 : COMMIT
+[INFO] 2019-04-20 15:53:28,541 : 
+CREATE TABLE member_position (
+	id SERIAL NOT NULL, 
+	member_id INTEGER, 
+	position_id INTEGER, 
+	year INTEGER, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(member_id) REFERENCES member (id), 
+	FOREIGN KEY(position_id) REFERENCES position (id) ON DELETE CASCADE
+)
+
+
+[INFO] 2019-04-20 15:53:28,541 : {}
+[INFO] 2019-04-20 15:53:28,555 : COMMIT
+[INFO] 2019-04-20 15:53:28,605 : BEGIN (implicit)
+[INFO] 2019-04-20 15:53:28,605 : INSERT INTO "user" (username, password) VALUES (%(username)s, %(password)s) RETURNING "user".id
+[INFO] 2019-04-20 15:53:28,605 : {'username': 'admin', 'password': '$pbkdf2-sha256$29000$vhdCyPmf8/6fU2ptrfW.Fw$ot574EChgc6FnvMU4bQXkTHRO8mAmaKo2OhG66fW6sg'}
+[INFO] 2019-04-20 15:53:28,608 : COMMIT
+[INFO] 2019-04-20 15:53:28,745 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,745 : {'name': 'position'}
+[INFO] 2019-04-20 15:53:28,747 : BEGIN (implicit)
+[INFO] 2019-04-20 15:53:28,747 : INSERT INTO position (label, id) VALUES (%(label)s, %(id)s)
+[INFO] 2019-04-20 15:53:28,748 : ({'label': 'président', 'id': 1}, {'label': 'trésorier', 'id': 2}, {'label': 'DSI', 'id': 3}, {'label': 'vice-président', 'id': 4}, {'label': 'vice-trésorier', 'id': 5})
+[INFO] 2019-04-20 15:53:28,750 : COMMIT
+[INFO] 2019-04-20 15:53:28,751 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,752 : {'name': 'user'}
+[INFO] 2019-04-20 15:53:28,753 : BEGIN (implicit)
+[INFO] 2019-04-20 15:53:28,753 : INSERT INTO "user" (id, username, password) VALUES (%(id)s, %(username)s, %(password)s)
+[INFO] 2019-04-20 15:53:28,753 : ({'id': 2, 'username': 'alang', 'password': '$pbkdf2-sha256$29000$fm/NWQuhVMoZA4CQsrbW.g$3jD.cf6RcWUKuwk52i6ExWejRxL0ehJJsCPkrkPcxLs'}, {'id': 3, 'username': 'alouest', 'password': '$pbkdf2-sha256$29000$8V6rlZKyFqJUytm7d85Zaw$vDui36jBJnCb5cvIVr9G3t10DyCqpPFfvjLvHTWwxRg'})
+[INFO] 2019-04-20 15:53:28,754 : COMMIT
+[INFO] 2019-04-20 15:53:28,757 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,757 : {'name': 'member'}
+[INFO] 2019-04-20 15:53:28,759 : BEGIN (implicit)
+[INFO] 2019-04-20 15:53:28,761 : INSERT INTO member (id, "firstName", "lastName", email, birthday, "gradeYear", telephone, gender, facebook, linkedin, company) VALUES (%(id)s, %(firstName)s, %(lastName)s, %(email)s, %(birthday)s, %(gradeYear)s, %(telephone)s, %(gender)s, %(facebook)s, %(linkedin)s, %(company)s)
+[INFO] 2019-04-20 15:53:28,761 : ({'id': 2, 'firstName': 'Lang', 'lastName': 'Alexandre', 'email': 'alang@gmail.com', 'birthday': '1996-11-11 00:00:00', 'gradeYear': 2020, 'telephone': 646759259, 'gender': 'M', 'facebook': None, 'linkedin': None, 'company': None}, {'id': 3, 'firstName': 'Lang', 'lastName': 'Alexandre', 'email': 'alouest@gmail.com', 'birthday': '1996-11-11 00:00:00', 'gradeYear': 2020, 'telephone': 646759259, 'gender': 'M', 'facebook': None, 'linkedin': None, 'company': None})
+[INFO] 2019-04-20 15:53:28,763 : COMMIT
+[INFO] 2019-04-20 15:53:28,765 : select relname from pg_class c join pg_namespace n on n.oid=c.relnamespace where pg_catalog.pg_table_is_visible(c.oid) and relname=%(name)s
+[INFO] 2019-04-20 15:53:28,766 : {'name': 'member_position'}
+[INFO] 2019-04-20 15:53:28,767 : BEGIN (implicit)
+[INFO] 2019-04-20 15:53:28,767 : INSERT INTO member_position (member_id, position_id, year) VALUES (%(member_id)s, %(position_id)s, %(year)s)
+[INFO] 2019-04-20 15:53:28,767 : ({'member_id': 2, 'position_id': 3, 'year': 2018.0}, {'member_id': 3, 'position_id': 4, 'year': 2013.0}, {'member_id': 2, 'position_id': 1, 'year': 2019.0}, {'member_id': 3, 'position_id': 2, 'year': 2017.0})
+[INFO] 2019-04-20 15:53:28,771 : COMMIT

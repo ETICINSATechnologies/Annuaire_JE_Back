@@ -7,6 +7,8 @@ import base64
 import hashlib
 from passlib.hash import pbkdf2_sha256
 
+from util.VarConfig import VarConfig
+
 
 def encrypt(password):
     return pbkdf2_sha256.encrypt(password)
@@ -25,7 +27,7 @@ def jwt_encode(payload):
     encoded_header = encode_base64(header)
     encoded_payload = encode_base64(json.dumps(payload))
 
-    secret_key = bytes('Thisis0urKey', 'utf-8')
+    secret_key = bytes(VarConfig.get()['password'], 'utf-8')
     message = f'{encoded_header}.{encoded_payload}'
 
     signature = hmac.new(
@@ -38,7 +40,7 @@ def jwt_encode(payload):
 def jwt_decode(jwt):
     encoded_header, encoded_payload, encoded_signature = jwt.split('.')
 
-    secret_key = bytes('Thisis0urKey', 'utf-8')
+    secret_key = bytes(VarConfig.get()['password'], 'utf-8')
     message = f'{encoded_header}.{encoded_payload}'
 
     signature = hmac.new(

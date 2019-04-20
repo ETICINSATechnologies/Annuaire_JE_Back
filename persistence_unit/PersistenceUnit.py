@@ -4,16 +4,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from util.db_config import get_db_info
 from util.log import info_logger
+from util.db_config import get_db_info
 from util.serialize import serialize
 
-db_string = get_db_info("util/config.yml")
-engine = create_engine(db_string)
+engine = create_engine(get_db_info())
 Session = sessionmaker(engine)
 
 """
-makeATransaction is a function that allows to re-use the same code
+makeATransaction is a function that allows to re-use the same code.
 The function is split into two parts : 
 everything below the keyword 'yield' and everything below
 The first part of the code is first executed and return the variable 

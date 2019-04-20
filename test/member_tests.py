@@ -22,7 +22,31 @@ class MemberTest:
             "email": "john.connor@terminator.com",
             "birthday": "1967-01-20",
             "gradeYear": 3,
-            "telephone": 116316425
+            "telephone": 116316425,
+            "positions": [{
+                'id': 1,
+                'year': 2014
+            }, {
+                'id': 3,
+                'year': 2018
+            }]
+        }))(MemberTest, 'all needed attributes', False)
+
+        make_test(lambda: MemberController.create_member({
+            "password": "l33tP@ss",
+            "firstName": "Louis",
+            "lastName": "Rodolphe",
+            "email": "louis.rodolphe@terminator.com",
+            "birthday": "1967-01-20",
+            "gradeYear": 3,
+            "telephone": 116316425,
+            "positions": [{
+                'id': 2,
+                'year': 2015
+            }, {
+                'id': 3,
+                'year': 2017
+            }]
         }))(MemberTest, 'all needed attributes', False)
 
         make_test(lambda: MemberController.create_member({
@@ -79,7 +103,7 @@ class MemberTest:
         }))(
             MemberTest, 'specific documents', False)
 
-        make_test(lambda: MemberController.get_member_by_id(3))(
+        make_test(lambda: MemberController.get_member_by_id(2))(
             MemberTest, 'document with existing id', False)
 
         make_test(lambda: MemberController.get_member_by_id(-1))(
@@ -108,21 +132,21 @@ class MemberTest:
     @staticmethod
     def delete_documents():
         print('\n\033[01m## Deletion ##\033[0m')
-        make_test(lambda: MemberController.delete_member(2))(
+        make_test(lambda: MemberController.delete_member(3))(
             MemberTest, 'existing document', False)
 
-        make_test(lambda: MemberController.delete_member(2))(
+        make_test(lambda: MemberController.delete_member(3))(
             MemberTest, 'non existing document', True)
 
 
 if __name__ == '__main__':
     Controller.recreate_tables()
+    Controller.import_position()
     MemberTest.create_members()
-    MemberController.get_members()
     MemberTest.read_documents()
     # MemberTest.update_documents()
-    # MemberTest.read_documents()
-    MemberTest.delete_documents()
+    MemberTest.read_documents()
+    # MemberTest.delete_documents()
     MemberTest.read_documents()
     print('\n\n\033[04mSuccess\033[01m: ',
           MemberTest.nb_tests_succeed, '/',
