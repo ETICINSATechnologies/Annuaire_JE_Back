@@ -22,21 +22,27 @@ CORS(app)
 def send_response(old_function, authorization_function=None,
                   authorization=None, resource_id=None):
     def new_function(*args, **kwargs):
+
         try:
             if authorization_function:
                 authorization_function(authorization, resource_id)
-
             return jsonify(old_function(*args, **kwargs))
-        except sqlalchemy.exc.IntegrityError:
-            return 'integrity error', 422
+
         except sqlalchemy.orm.exc.NoResultFound:
             return 'no result found', 204
+
         except LoginException:
             return 'authentication failed', 401
+
+        except AuthError:
+            return 'access denied', 403
+
+        except sqlalchemy.exc.IntegrityError:
+            return 'integrity error', 422
+
         except FormatError:
             return 'incorrect file', 423
-        except AuthError:
-            return 'permission denied', 403
+
         except Exception as e:
             print(e)
             info_logger.error(e)
@@ -60,10 +66,12 @@ def is_connected(*args):
 def is_own_resource(*args):
     jwt = args[0]
     resource_id = args[1]
-
     payload = is_connected(jwt)
+
     if payload['username'] != 'admin' and payload['id'] != resource_id:
         raise AuthError
+
+    return True
 
 
 def is_admin(*args):
@@ -72,6 +80,8 @@ def is_admin(*args):
     payload = is_connected(jwt)
     if payload['username'] != 'admin':
         raise AuthError
+
+    return True
 
 
 @app.route('/')
@@ -104,14 +114,16 @@ def login_member():
 @app.route('/member', methods=['POST'])
 def create_member():
     return send_response(
-        lambda: MemberController.create_member(request.get_json())
+        lambda: MemberController.create_member(request.get_json()),
+        is_admin, request.headers.get('Authorization')
     )()
 
 
 @app.route('/member', methods=['GET'])
 def get_members():
     return send_response(
-        lambda: MemberController.get_members(request.args)
+        lambda: MemberController.get_members(request.args),
+        is_connected, request.headers.get('Authorization')
     )()
 
 
@@ -142,38 +154,42 @@ def delete_member(member_id):
 
 @app.route('/member/<int:member_id>/image', methods=['GET', 'POST'])
 def update_profile_picture(member_id):
-    if request.method == 'POST':
-        try:
-            if request.files.get('file'):
-                file = request.files['file']
-                save_file(file, member_id)
-                Controller.import_data()
-                return 'Success'
-        except Exception as e:
-            info_logger.error(e)
+    if is_own_resource(request.headers.get('Authorization'), member_id):
+        if request.method == 'POST':
+            try:
+                if request.files.get('file'):
+                    file = request.files['file']
+                    save_file(file, member_id)
+                    return 'Success'
+            except Exception as e:
+                info_logger.error(e)
 
-        return "unexpected error", 500
+            return "unexpected error", 500
 
-    return '''
-        <!doctype html>
-        <title>Upload new File</title>
-        <h1>Upload new File</h1>
-        <form method=post enctype=multipart/form-data>
-          <p><input type=file name=file>
-             <input type=submit value=Upload>
-        </form>
-        '''
+        return '''
+            <!doctype html>
+            <title>Upload new File</title>
+            <h1>Upload new File</h1>
+            <form method=post enctype=multipart/form-data>
+              <p><input type=file name=file>
+                 <input type=submit value=Upload>
+            </form>
+            '''
 
 
 @app.route('/member/<int:member_id>/get_image', methods=['GET'])
 def get_image(member_id):
-    file = find_image(member_id)
-    if file:
-        return send_from_directory(
-            safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
-            file
-        )
-    return 'not found', 404
+    if is_own_resource(request.headers.get('Authorization'), member_id):
+        image_location = find_image(member_id)
+        if image_location:
+            return send_from_directory(
+                safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
+                image_location
+            )
+
+        return 'not found', 204
+
+    return 'access denied', 403
 
 
 @app.route('/position', methods=['GET'])
@@ -183,7 +199,7 @@ def get_position():
     )()
 
 
-@app.route('/uploadData', methods=['GET', 'POST'])
+@app.route('/yearbook/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         try:
@@ -210,7 +226,7 @@ def upload_file():
     '''
 
 
-@app.route('/download/annuaire', methods=['GET'])
+@app.route('/yearbook/download', methods=['GET'])
 def download():
     Controller.export_data()
     return send_from_directory(
@@ -220,4 +236,4 @@ def download():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')

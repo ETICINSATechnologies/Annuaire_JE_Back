@@ -8,7 +8,7 @@ import yaml
 class VarConfig:
     @staticmethod
     def get():
-        with open("util/config.yml", 'r') as file:
+        with open(".env", 'r') as file:
             config = yaml.load(file, Loader=yaml.FullLoader)
 
             # if the environment variable "EXTENDED_DOC_PASSWORD" exists
@@ -16,3 +16,7 @@ class VarConfig:
                 config['password'] = os.environ["EXTENDED_DOC_PASSWORD"]
 
             return config
+
+
+if __name__ == '__main__':
+    print(VarConfig.get())

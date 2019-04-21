@@ -1,0 +1,148 @@
+FORMAT: 1A
+HOST: annuaire-anciens/api
+
+# Annuaire Des Anciens API
+
+This documentation describes the API needed by the application [Annuaire Des Anciens](https://www.annuaire-anciens.etic-insa.com)
+developped by [ETIC INSA Technologies](https://www.etic-insa.com).
+
+The code of the application can be found [here](https://github.com/ETICINSATechnologies/AnnuaireAncien_v2.0).
+
+# Data Structure
+
+## Position (object)
++ id: 1 (number)
++ label: Responsable DSI (string)
++ year: 2019 (string)
+
+## PositionToSave (object)
++ id: 1 (number)
++ year: 2019 (string)
+
+
+## Member (object)
++ id: 1 (number)
++ username: username (string)
++ password: password (string)
++ firstName: Alexandre (string)
++ lastName: Lang (string)
++ gender M (string)
++ telephone: +33634576890 (string)
++ email: alexandre.lang@etic.com (string)
++ photo: 1.jpg (string) - location of the member's profile picture
++ facebook: facebook.com/username (string)
++ linkedin: linkedin.com/username (string)
++ birthday: 01-01-1981 (string)
++ positions: (array[Position])
+
+## Meta (object)
++ page: 0 (number)
++ totalPages: 2 (number)
++ totalItems: 40 (number)
++ itemsPerPage: 25 (number)
+
+# Group auth
+
+## login [/auth/login]
+
+### Authentication endpoint [POST]
+
++ Request
+    + Attributes
+        + username: username (string)
+        + password: password (string)
+
++ Response 200 (application/json)
+    + Body
+
+            {
+                "token": "  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c" +
+            }
+
+# Group Member
+
+## member [/core/member]
+
+### Get all members [GET]
+
++ Attributes
+    + search: Alexandre Lang (optional, string) - search on firstName and lastName, one can make a multiple research by using a space as delimiter
+    + year (optional, number)
+    + company (optional, string)
+
++ Response 200 (application/json)
+    + Attributes
+        + content (array[Member])
+        + meta (Meta)
+
+### Create a member [POST]
+
++ Request
+    + Attributes
+        + username: username (string)
+        + password: password (string)
+        + firstName: Alexandre (string, required)
+        + lastName: Lang (string, required)
+        + gender: M (string)
+        + telephone: +33634576890 (string, required)
+        + email: alexandre.lang@etic.com (string, required)
+        + photo: 1.jpg (string)
+        + facebook: facebook.com/username (string)
+        + linkedin: linkedin.com/username (string)
+        + positions (array[PositionToSave])
+
++ Response 200 (application/json)
+    + Attributes (Member)
+
+## member/id [/core/member/id]
+
+### Get one member [GET]
+
++ Attributes
+    + id (number, required)
+
++ Response 200 (application/json)
+    + Attributes (Member)
+
+### Update a member [PUT]
+
++ Request
+    + Attributes
+        + firstName: Alexandre (string, required)
+        + lastName: Lang (string, required)
+        + gender: M (string)
+        + telephone: +33634576890 (string, required)
+        + email: alexandre.lang@etic.com (string, required)
+        + photo: 1.jpg (string)
+        + facebook: facebook.com/username (string)
+        + linkedin: linkedin.com/username (string)
+        + positions (array[PositionToSave])
+
++ Response 200 (application/json)
+    + Attributes (Member)
+
+### Delete one member [DELETE]
+
++ Attributes
+    + id (number, required)
+
++ Response 200 (application/json)
+    + Attributes (Member)
+
+## member/board/latest [/core/member/board/latest]
+
+### Get member of the latest board [GET]
+
++ Response 200 (application/json)
+    + Attributes
+        + content (array[Member])
+        + meta (Meta)
+
+# Group Position
+
+## position [/core/position]
+
+### Get all positions [GET]
+
++ Response 200 (application/json)
+    + Attributes (array[Position])

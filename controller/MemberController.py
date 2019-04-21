@@ -2,6 +2,9 @@
 # coding: utf8
 
 from time import time
+
+import sqlalchemy.orm
+
 import persistence_unit.PersistenceUnit as pUnit
 
 from entities.User import User
@@ -26,20 +29,25 @@ class MemberController:
     @staticmethod
     @pUnit.make_a_transaction
     def login(session, *args):
-        username = args[0]['username']
-        password = args[0]['password']
+        try:
+            username = args[0]['username']
+            password = args[0]['password']
 
-        user = session.query(User).filter(
-            User.username == username).one()
+            user = session.query(User).filter(
+                User.username == username).one()
 
-        if user and is_password_valid(user.password, password):
-            exp = time() + 24 * 3600
-            payload = {
-                'id': user.id,
-                'username': user.username,
-                'exp': exp
-            }
-            return jwt_encode(payload)
+            if is_password_valid(user.password, password):
+                exp = time() + 24 * 3600
+                payload = {
+                    'id': user.id,
+                    'username': user.username,
+                    'exp': exp
+                }
+                return {
+                    "token": jwt_encode(payload)
+                }
+        except sqlalchemy.orm.exc.NoResultFound:
+            pass
 
         raise LoginException
 
