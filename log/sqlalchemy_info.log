@@ -1,0 +1,22 @@
+[INFO] 2019-04-21 15:01:52,146 : select version()
+[INFO] 2019-04-21 15:01:52,147 : {}
+[INFO] 2019-04-21 15:01:52,158 : select current_schema()
+[INFO] 2019-04-21 15:01:52,158 : {}
+[INFO] 2019-04-21 15:01:52,274 : SELECT CAST('test plain returns' AS VARCHAR(60)) AS anon_1
+[INFO] 2019-04-21 15:01:52,274 : {}
+[INFO] 2019-04-21 15:01:52,276 : SELECT CAST('test unicode returns' AS VARCHAR(60)) AS anon_1
+[INFO] 2019-04-21 15:01:52,276 : {}
+[INFO] 2019-04-21 15:01:52,277 : show standard_conforming_strings
+[INFO] 2019-04-21 15:01:52,277 : {}
+[INFO] 2019-04-21 15:01:52,278 : BEGIN (implicit)
+[INFO] 2019-04-21 15:01:52,279 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".username = %(username_1)s
+[INFO] 2019-04-21 15:01:52,279 : {'username_1': 'lulu.connor'}
+[INFO] 2019-04-21 15:01:52,284 : ROLLBACK
+[INFO] 2019-04-21 15:02:19,112 : BEGIN (implicit)
+[INFO] 2019-04-21 15:02:19,112 : SELECT "user".id AS user_id, "user".username AS user_username, "user".password AS user_password 
+FROM "user" 
+WHERE "user".username = %(username_1)s
+[INFO] 2019-04-21 15:02:19,112 : {'username_1': 'admin'}
+[INFO] 2019-04-21 15:02:19,148 : COMMIT

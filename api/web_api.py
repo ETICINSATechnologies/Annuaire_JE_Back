@@ -86,7 +86,6 @@ def is_admin(*args):
 
 @app.route('/')
 def index():
-    print(is_connected(request.headers))
     return ''' 
     <!doctype html>  
     <html>  
@@ -236,4 +235,4 @@ def download():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')

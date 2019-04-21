@@ -1,7 +1,7 @@
 ordbms: postgresql
 user: postgres
 password: password
-host: localhost
+host: postgres
 port: 5432
-dbname: Annuaire
+dbname: yearbook
 secretkey: Thisis0urKey

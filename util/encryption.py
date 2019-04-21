@@ -7,6 +7,7 @@ import base64
 import hashlib
 from passlib.hash import pbkdf2_sha256
 
+from util.Exception import AuthError
 from util.VarConfig import VarConfig
 
 
@@ -38,16 +39,21 @@ def jwt_encode(payload):
 
 
 def jwt_decode(jwt):
-    encoded_header, encoded_payload, encoded_signature = jwt.split('.')
+    try:
+        encoded_header, encoded_payload, encoded_signature \
+            = jwt.split('.')
 
-    secret_key = bytes(VarConfig.get()['password'], 'utf-8')
-    message = f'{encoded_header}.{encoded_payload}'
+        secret_key = bytes(VarConfig.get()['password'], 'utf-8')
+        message = f'{encoded_header}.{encoded_payload}'
 
-    signature = hmac.new(
-        secret_key, message.encode('utf-8'), hashlib.sha256).hexdigest()
+        signature = hmac.new(
+            secret_key, message.encode('utf-8'),
+            hashlib.sha256).hexdigest()
 
-    if encoded_signature == encode_base64(signature):
-        return json.loads(decode_base64(encoded_payload))
+        if encoded_signature == encode_base64(signature):
+            return json.loads(decode_base64(encoded_payload))
+    except Exception:
+        raise AuthError
 
 
 def encode_base64(string):
