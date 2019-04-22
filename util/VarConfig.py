@@ -2,14 +2,16 @@
 # coding: utf8
 
 import os
-import yaml
 
 
 class VarConfig:
     @staticmethod
     def get():
+        config = {}
         with open(".env", 'r') as file:
-            config = yaml.load(file, Loader=yaml.FullLoader)
+            for line in file.readlines():
+                var, value = line.replace('\n', '').split('=')
+                config[var] = value
 
             # if the environment variable "EXTENDED_DOC_PASSWORD" exists
             if os.environ.get("EXTENDED_DOC_PASSWORD"):
