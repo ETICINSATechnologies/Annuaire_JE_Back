@@ -12,3 +12,11 @@ class FormatError(Exception):
 
 class AuthError(Exception):
     pass
+
+
+class SuccessNoBody(Exception):
+    pass
+
+
+class NotFound(Exception):
+    pass

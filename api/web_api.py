@@ -22,32 +22,47 @@ CORS(app)
 def send_response(old_function, authorization_function=None,
                   authorization=None, resource_id=None):
     def new_function(*args, **kwargs):
-
         try:
             if authorization_function:
                 authorization_function(authorization, resource_id)
-            return jsonify(old_function(*args, **kwargs))
-
-        except sqlalchemy.orm.exc.NoResultFound:
-            return 'no result found', 204
+            response = old_function(*args, **kwargs)
+            if response is None:
+                return '', 204
+            if isinstance(response, (dict, list)):
+                return jsonify(response)
+            return response
 
         except LoginException:
-            return 'authentication failed', 401
+            return jsonify({
+                'message': 'authentication failed'
+            }), 401
 
         except AuthError:
-            return 'access denied', 403
+            return jsonify({
+                'message': 'access denied'
+            }), 403
+
+        except (NotFound, sqlalchemy.orm.exc.NoResultFound):
+            return jsonify({
+                'message': 'no result found'
+            }), 404
 
         except sqlalchemy.exc.IntegrityError:
-            return 'integrity error', 422
+            return jsonify({
+                'message': 'integrity error'
+            }), 422
 
         except FormatError:
-            return 'incorrect file', 423
+            return jsonify({
+                'message': 'incorrect file'
+            }), 423
 
         except Exception as e:
-            print(e)
             info_logger.error(e)
 
-        return "unexpected error", 500
+        return jsonify({
+            'message': 'unexpected error'
+        }), 500
 
     return new_function
 
@@ -87,18 +102,18 @@ def is_admin(*args):
 @app.route('/')
 def index():
     return ''' 
-    <!doctype html>  
-    <html>  
-      <body>          
-        <h1 style="text-align:center">  
-          Welcome on Annuaire Back 
-        </h1>  
-        <div style="text-align:center">  
-          <p> This application was developed by ETIC INSA Technologies</p>  
-          <a href="https://github.com/ETICINSATechnologies/AnnuaireAncien_v2.0"   
-             style="text-align:center"> Find us on Github! </a>  
-        </div>  
-      </body>  
+    <!doctype html>
+    <html>
+      <body>
+        <h1 style="text-align:center"
+          Welcome on Annuaire Back
+        </h1>
+        <div style="text-align:center"
+          <p> This application was developed by ETIC INSA Technologies</p>
+          <a href="https://github.com/ETICINSATechnologies/AnnuaireAncien_v2.0"
+             style="text-align:center">Find us on Github!</a>
+        </div>
+      </body>
     </html>  
     '''
 
@@ -130,7 +145,8 @@ def get_members():
 def get_member(member_id):
     return send_response(
         lambda:
-        MemberController.get_member_by_id(member_id)
+        MemberController.get_member_by_id(member_id),
+        is_connected, request.headers.get('Authorization')
     )()
 
 
@@ -153,66 +169,59 @@ def delete_member(member_id):
 
 @app.route('/member/<int:member_id>/image', methods=['GET', 'POST'])
 def update_profile_picture(member_id):
-    if is_own_resource(request.headers.get('Authorization'), member_id):
-        if request.method == 'POST':
-            try:
-                if request.files.get('file'):
-                    file = request.files['file']
-                    save_file(file, member_id)
-                    return 'Success'
-            except Exception as e:
-                info_logger.error(e)
+    if request.method == 'POST':
+        if request.files.get('file'):
+            file = request.files['file']
+            return send_response(
+                lambda: save(file, member_id),
+                is_own_resource, request.headers.get('Authorization'),
+            )()
 
-            return "unexpected error", 500
-
-        return '''
-            <!doctype html>
-            <title>Upload new File</title>
-            <h1>Upload new File</h1>
-            <form method=post enctype=multipart/form-data>
-              <p><input type=file name=file>
-                 <input type=submit value=Upload>
-            </form>
-            '''
+    return '''
+        <!doctype html>
+        <title>Upload new File</title>
+        <h1>Upload new File</h1>
+        <form method=post enctype=multipart/form-data>
+          <p><input type=file name=file>
+             <input type=submit value=Upload>
+        </form>
+    '''
 
 
 @app.route('/member/<int:member_id>/get_image', methods=['GET'])
 def get_image(member_id):
-    if is_own_resource(request.headers.get('Authorization'), member_id):
+    def get_member_image():
         image_location = find_image(member_id)
         if image_location:
             return send_from_directory(
-                safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
-                image_location
-            )
+                safe_join(os.getcwd(),
+                          app.config['UPLOAD_FOLDER']),
+                image_location)
+        raise NotFound
 
-        return 'not found', 204
-
-    return 'access denied', 403
+    return send_response(
+        lambda: get_member_image(),
+        is_connected, request.headers.get('Authorization')
+    )()
 
 
 @app.route('/position', methods=['GET'])
 def get_position():
     return send_response(
-        lambda: MemberController.get_positions()
+        lambda: MemberController.get_positions(),
+        is_connected, request.headers.get('Authorization')
     )()
 
 
 @app.route('/yearbook/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        try:
-            if request.files.get('file'):
-                file = request.files['file']
-                save_file(file)
-                Controller.import_data()
-                return 'Success'
-        except FormatError:
-            return 'incorrect file', 423
-        except Exception as e:
-            info_logger.error(e)
-
-        return "unexpected error", 500
+        if request.files.get('file'):
+            file = request.files['file']
+            return send_response(
+                lambda: Controller.import_data(file),
+                is_admin, request.headers.get('Authorization')
+            )()
 
     return '''
     <!doctype html>
@@ -230,9 +239,10 @@ def download():
     Controller.export_data()
     return send_from_directory(
         safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
-        'annuaire.xlsx'
+        'annuaire.xlsx',
     )
 
 
 if __name__ == '__main__':
+    Controller.create_tables()
     app.run(debug=True, host='0.0.0.0')

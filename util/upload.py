@@ -17,7 +17,7 @@ def get_extension(filename):
         return filename.rsplit('.', 1)[1].lower()
 
 
-def save_file(file, member_id=None):
+def save(file, member_id=None):
     try:
         extension = get_extension(file.filename)
         if extension in ALLOWED_EXTENSIONS:

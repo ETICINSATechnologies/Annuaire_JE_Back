@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf8
+import re
 
 import pandas as pd
+import sqlalchemy.exc
 from pandas import ExcelWriter
 from pandas import ExcelFile
 
@@ -40,9 +42,12 @@ class Controller:
     @staticmethod
     @pUnit.make_a_transaction
     def create_admin(session):
-        user = User('admin')
-        user.update("password")
-        session.add(user)
+        admin_exist = session.query(User).filter(
+            User.username == 'admin').scalar() is not None
+        if not admin_exist:
+            user = User('admin')
+            user.update(VarConfig.get()["password"])
+            session.add(user)
 
     @staticmethod
     def import_position():
@@ -56,15 +61,18 @@ class Controller:
                     index=False)
 
     @staticmethod
-    def import_data():
-        Controller.recreate_tables()
-        position = pd.read_excel('upload/data.xlsx',
-                                 sheet_name='Positions')
+    def import_data(file):
+        if not re.match(r'\w*\.xlsx', file.filename):
+            print(file.filename)
+            raise FormatError
+
+        excel_file = pd.ExcelFile(file)
+        position = pd.read_excel(excel_file, sheet_name='Positions')
 
         position['id'] = position.index + 1
         position = position.rename(columns={'position': 'label'})
 
-        member = pd.read_excel('upload/data.xlsx', sheet_name='Members')
+        member = pd.read_excel(excel_file, sheet_name='Members')
         member = member.rename(columns={
             'nom': 'firstName',
             'prénom': 'lastName',
@@ -110,6 +118,8 @@ class Controller:
                                       right_on='label')
         m_position = m_position.filter(['member_id', 'id', 'year']) \
             .rename(columns={'id': 'position_id'})
+
+        Controller.recreate_tables()
 
         # write to sql
         position.to_sql(name='position', con=engine, if_exists='append',
@@ -173,4 +183,4 @@ class Controller:
 
 
 if __name__ == '__main__':
-    Controller.import_data()
+    Controller.recreate_tables()

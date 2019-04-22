@@ -4,6 +4,7 @@
 from time import time
 
 import sqlalchemy.orm
+from flask import jsonify
 
 import persistence_unit.PersistenceUnit as pUnit
 
@@ -11,7 +12,7 @@ from entities.User import User
 from entities.Member import Member
 from entities.MemberPosition import MemberPosition
 from entities.Position import Position
-from util.Exception import LoginException
+from util.Exception import LoginException, NotFound
 from util.encryption import jwt_encode
 from util.encryption import is_password_valid
 
@@ -79,7 +80,8 @@ class MemberController:
             attributes = {
                 key: args[0].get(key) for key in args[0].keys()
             }
-        return session.query(Member).filter_by(**attributes)
+        members = session.query(Member).filter_by(**attributes).all()
+        return members
 
     @staticmethod
     @pUnit.make_a_transaction
