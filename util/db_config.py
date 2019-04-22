@@ -5,8 +5,8 @@ from util.VarConfig import VarConfig
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
-default_db_info = ('postgresql://'
-                   'postgres:password@localhost:5433/extendedDoc')
+default_db_info = ('postgresql://''postgres:password'
+                   '@localhost:5433/extendedDoc')
 
 
 def get_db_info():

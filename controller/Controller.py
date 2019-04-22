@@ -3,9 +3,6 @@
 import re
 
 import pandas as pd
-import sqlalchemy.exc
-from pandas import ExcelWriter
-from pandas import ExcelFile
 
 from util.Exception import FormatError
 from util.db_config import *

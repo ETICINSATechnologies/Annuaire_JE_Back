@@ -1,12 +1,31 @@
 #!/usr/bin/env python3
 # coding: utf8
+import os
+import sys
 
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 
 from util.log import info_logger
 from util.db_config import get_db_info
 from util.serialize import serialize
+
+
+waiting_time = 5
+connected = False
+
+while not connected:
+    try:
+        engine = create_engine(get_db_info())
+        engine.connect()
+        break
+    except OperationalError:
+        waiting_time -= 1
+        if waiting_time == 0:
+            sys.exit()
+        print(f'Remaining connection tries before exiting: {waiting_time}')
+
 
 engine = create_engine(get_db_info())
 Session = sessionmaker(engine)
