@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # coding: utf8
-import os
+
 import sys
+import time
+from sqlalchemy.exc import OperationalError
 
 from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker
 
 from util.log import info_logger
@@ -12,19 +13,23 @@ from util.db_config import get_db_info
 from util.serialize import serialize
 
 
-engine = create_engine(get_db_info())
-Session = sessionmaker(engine)
+def try_to_connect():
+    remaining_tries = 3
+    while remaining_tries:
+        try:
+            print('Trying to connect to Database...')
+            created_engine = create_engine(get_db_info())
+            created_engine.connect()
+            print('Connection succeed!')
+            return created_engine
+        except OperationalError:
+            remaining_tries -= 1
+            print('Connection failed', end=' ')
+            if remaining_tries == 0:
+                sys.exit()
+            print('- new try')
 
-"""
-makeATransaction is a function that allows to re-use the same code.
-The function is split into two parts : 
-everything below the keyword 'yield' and everything below
-The first part of the code is first executed and return the variable 
-after 'yield' (in this case 'session').
-The one that calls the contextmanager executes then its code and can 
-have access to the return variable
-Finally the second part of the contextmanager is executed in all cases   
-"""
+            time.sleep(0.5)
 
 
 def make_a_transaction(old_function):
@@ -60,3 +65,7 @@ def make_a_query(old_function):
         return response
 
     return new_function
+
+
+engine = try_to_connect()
+Session = sessionmaker(engine)

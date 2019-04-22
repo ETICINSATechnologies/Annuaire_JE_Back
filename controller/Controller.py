@@ -33,10 +33,8 @@ class Controller:
 
     @staticmethod
     def create_tables():
-        print('Tables created !')
         Base.metadata.create_all(pUnit.engine)
         Controller.create_admin()
-        return 'init'
 
     @staticmethod
     @pUnit.make_a_transaction
@@ -61,8 +59,7 @@ class Controller:
 
     @staticmethod
     def import_data(file):
-        if not re.match(r'\w*\.xlsx', file.filename):
-            print(file.filename)
+        if not re.match(r'\w*\.(xlsx|xlsm)', file.filename):
             raise FormatError
 
         excel_file = pd.ExcelFile(file)

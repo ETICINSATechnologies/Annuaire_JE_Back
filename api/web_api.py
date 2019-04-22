@@ -167,28 +167,7 @@ def delete_member(member_id):
     )()
 
 
-@app.route('/member/<int:member_id>/image', methods=['GET', 'POST'])
-def update_profile_picture(member_id):
-    if request.method == 'POST':
-        if request.files.get('file'):
-            file = request.files['file']
-            return send_response(
-                lambda: save(file, member_id),
-                is_own_resource, request.headers.get('Authorization'),
-            )()
-
-    return '''
-        <!doctype html>
-        <title>Upload new File</title>
-        <h1>Upload new File</h1>
-        <form method=post enctype=multipart/form-data>
-          <p><input type=file name=file>
-             <input type=submit value=Upload>
-        </form>
-    '''
-
-
-@app.route('/member/<int:member_id>/get_image', methods=['GET'])
+@app.route('/member/<int:member_id>/image', methods=['GET'])
 def get_image(member_id):
     def get_member_image():
         image_location = find_image(member_id)
@@ -205,6 +184,24 @@ def get_image(member_id):
     )()
 
 
+@app.route('/member/<int:member_id>/image', methods=['POST'])
+def update_profile_picture(member_id):
+    if request.files.get('file'):
+        file = request.files['file']
+        return send_response(
+            lambda: save(file, member_id),
+            is_own_resource, request.headers.get('Authorization'),
+        )()
+
+
+@app.route('/member/<int:member_id>/image', methods=['DELETE'])
+def delete_profile_picture(member_id):
+    return send_response(
+        lambda: delete_image(member_id),
+        is_own_resource, request.headers.get('Authorization'),
+    )()
+
+
 @app.route('/position', methods=['GET'])
 def get_position():
     return send_response(
@@ -213,25 +210,14 @@ def get_position():
     )()
 
 
-@app.route('/yearbook/upload', methods=['GET', 'POST'])
+@app.route('/yearbook/upload', methods=['POST'])
 def upload_file():
-    if request.method == 'POST':
-        if request.files.get('file'):
-            file = request.files['file']
-            return send_response(
-                lambda: Controller.import_data(file),
-                is_admin, request.headers.get('Authorization')
-            )()
-
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form method=post enctype=multipart/form-data>
-      <p><input type=file name=file>
-         <input type=submit value=Upload>
-    </form>
-    '''
+    if request.files.get('file'):
+        file = request.files['file']
+        return send_response(
+            lambda: Controller.import_data(file),
+            is_admin, request.headers.get('Authorization')
+        )()
 
 
 @app.route('/yearbook/download', methods=['GET'])
@@ -243,10 +229,6 @@ def download():
     )
 
 
-@app.route('/init', methods=['GET'])
-def init():
-    return send_response(lambda: Controller.create_tables())
-
-
 if __name__ == '__main__':
+    Controller.create_tables()
     app.run(debug=True, host='0.0.0.0')

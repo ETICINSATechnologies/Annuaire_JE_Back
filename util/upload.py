@@ -6,10 +6,10 @@ import re
 
 from flask import safe_join
 
-from util.log import info_logger
+from util.Exception import FormatError, NotFound
 
 UPLOAD_FOLDER = 'upload'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'xlsx'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 
 def get_extension(filename):
@@ -17,24 +17,24 @@ def get_extension(filename):
         return filename.rsplit('.', 1)[1].lower()
 
 
-def save(file, member_id=None):
-    try:
-        extension = get_extension(file.filename)
-        if extension in ALLOWED_EXTENSIONS:
-            location = "data.xlsx"
-            if member_id:
-                old_file = find_image(member_id)
-                if old_file:
-                    delete_image(old_file)
-                location = f'{member_id}.{extension}'
-            file.save(os.path.join(UPLOAD_FOLDER, location))
-            return location
-    except Exception as e:
-        info_logger.error(e)
+def save(file, member_id):
+    extension = get_extension(file.filename)
+    if extension in ALLOWED_EXTENSIONS:
+        delete_image(member_id)
+        location = f'{member_id}.{extension}'
+        file.save(os.path.join(UPLOAD_FOLDER, location))
+        return
+
+    raise FormatError
 
 
-def delete_image(file):
-    os.remove(os.path.join(UPLOAD_FOLDER, file))
+def delete_image(member_id):
+    image = find_image(member_id)
+    if image:
+        os.remove(os.path.join(UPLOAD_FOLDER, image))
+        return
+
+    raise NotFound
 
 
 def find_image(member_id):
