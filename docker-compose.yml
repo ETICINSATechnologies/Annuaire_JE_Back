@@ -13,7 +13,6 @@ services:
     ports:
       - 5432:5432
   app:
-    restart: always
     container_name: yearbook_api
     build: .
     ports:

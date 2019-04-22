@@ -243,6 +243,10 @@ def download():
     )
 
 
+@app.route('/init', methods=['GET'])
+def init():
+    return send_response(lambda: Controller.create_tables())
+
+
 if __name__ == '__main__':
-    Controller.create_tables()
     app.run(debug=True, host='0.0.0.0')

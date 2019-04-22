@@ -33,8 +33,10 @@ class Controller:
 
     @staticmethod
     def create_tables():
+        print('Tables created !')
         Base.metadata.create_all(pUnit.engine)
         Controller.create_admin()
+        return 'init'
 
     @staticmethod
     @pUnit.make_a_transaction
