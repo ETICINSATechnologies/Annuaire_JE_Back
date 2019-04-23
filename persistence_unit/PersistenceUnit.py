@@ -14,7 +14,7 @@ from util.serialize import serialize
 
 
 def try_to_connect():
-    remaining_tries = 3
+    remaining_tries = 10
     while remaining_tries:
         try:
             print('Trying to connect to Database...')
