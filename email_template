@@ -1,0 +1,6 @@
+Bonjour {firstName} {lastName},
+Vous avez été ajouté à l'annuaire des anciens !
+Voici vos identifiants :
+- username: {username}
+- password: {password}
+Connectez-vous sur le site {yearbook_url} pour changer ce mot de passe et accéder aux services de l'annuaire

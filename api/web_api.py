@@ -4,12 +4,14 @@
 import sqlalchemy.exc
 import sqlalchemy.orm
 
-from flask import Flask, send_from_directory, request
+from flask import Flask, send_from_directory, request, redirect
 from flask.json import jsonify
 from flask_cors import CORS
 
 from controller.Controller import Controller
 from controller.MemberController import MemberController
+from util.log import info_logger
+from util.send_email import Email, EmailError
 from util.upload import *
 from util.Exception import *
 from util.encryption import *
@@ -25,6 +27,7 @@ def send_response(old_function, authorization_function=None,
         try:
             if authorization_function:
                 authorization_function(authorization, resource_id)
+
             response = old_function(*args, **kwargs)
             if response is None:
                 return '', 204
@@ -32,9 +35,9 @@ def send_response(old_function, authorization_function=None,
                 return jsonify(response)
             return response
 
-        except LoginException:
+        except LoginError:
             return jsonify({
-                'message': 'authentication failed'
+                'message': 'unauthorized'
             }), 401
 
         except AuthError:
@@ -57,7 +60,13 @@ def send_response(old_function, authorization_function=None,
                 'message': 'incorrect file'
             }), 423
 
+        except EmailError:
+            return jsonify({
+                'message': 'mail error'
+            }), 502
+
         except Exception as e:
+            print(e)
             info_logger.error(e)
 
         return jsonify({
@@ -75,7 +84,7 @@ def is_connected(*args):
         if payload:
             return payload
 
-    raise AuthError
+    raise LoginError
 
 
 def is_own_resource(*args):
@@ -101,21 +110,9 @@ def is_admin(*args):
 
 @app.route('/')
 def index():
-    return ''' 
-    <!doctype html>
-    <html>
-      <body>
-        <h1 style="text-align:center"
-          Welcome on Annuaire Back
-        </h1>
-        <div style="text-align:center"
-          <p> This application was developed by ETIC INSA Technologies</p>
-          <a href="https://github.com/ETICINSATechnologies/AnnuaireAncien_v2.0"
-             style="text-align:center">Find us on Github!</a>
-        </div>
-      </body>
-    </html>  
-    '''
+    return redirect(
+        'https://app.swaggerhub.com/apis/epsilon32/YearBook/v3.0.0#/'
+    )
 
 
 @app.route('/login', methods=['POST'])
@@ -218,15 +215,36 @@ def upload_file():
             lambda: Controller.import_data(file),
             is_admin, request.headers.get('Authorization')
         )()
+    return jsonify({'message': 'missing file'}), 422
 
 
 @app.route('/yearbook/download', methods=['GET'])
 def download():
     Controller.export_data()
-    return send_from_directory(
-        safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
-        'annuaire.xlsx',
-    )
+    return send_response(
+        lambda: send_from_directory(
+            safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
+            'annuaire.xlsx'),
+        is_admin, request.headers.get('Authorization')
+    )()
+
+
+@app.route('/email/status', methods=['GET'])
+def check_email_status():
+    return send_response(
+        lambda: Email.set_status(),
+        is_admin, request.headers.get('Authorization')
+    )()
+
+
+@app.route('/email/validation', methods=['POST'])
+def send_email_validation():
+    if 'code' in request.form:
+        return send_response(
+            lambda: Email.create_token(request.form.get('code')),
+            is_admin, request.headers.get('Authorization')
+        )()
+    return jsonify({'message': 'code error'}), 422
 
 
 if __name__ == '__main__':

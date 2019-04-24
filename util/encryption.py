@@ -5,10 +5,18 @@ import json
 import hmac
 import base64
 import hashlib
+import random
+import string
+
 from passlib.hash import pbkdf2_sha256
 
 from util.Exception import AuthError
 from util.VarConfig import VarConfig
+
+
+def create_password():
+    return ''.join(random.SystemRandom().choice(
+            string.ascii_letters + string.digits) for i in range(15))
 
 
 def encrypt(password):

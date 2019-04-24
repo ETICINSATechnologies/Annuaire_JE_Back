@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # coding: utf8
-import re
 
+import re
 import pandas as pd
 
+from controller.MemberController import MemberController
 from util.Exception import FormatError
 from util.db_config import *
 from entities.User import User
@@ -12,7 +13,6 @@ from entities.MemberPosition import MemberPosition
 from entities.Position import Position
 import persistence_unit.PersistenceUnit as pUnit
 from persistence_unit.PersistenceUnit import engine
-from util.encryption import encrypt
 
 
 class Controller:
@@ -70,8 +70,8 @@ class Controller:
 
         member = pd.read_excel(excel_file, sheet_name='Members')
         member = member.rename(columns={
-            'nom': 'firstName',
-            'prénom': 'lastName',
+            'prénom': 'firstName',
+            'nom': 'lastName',
             'genre': 'gender',
             'anniversaire': 'birthday',
             'année diplôme': 'gradeYear'
@@ -95,13 +95,7 @@ class Controller:
         member = member.drop(list(member.filter(
             regex='year\d|position\d')), axis=1)
 
-        user = pd.DataFrame({
-            'id': member['id'],
-            'username':
-                member['email'].apply(lambda x: x.split('@')[0]),
-            'password':
-                [encrypt('password') for i in range(len(member['id']))]
-        })
+        member['username'] = member['email'].apply(lambda x: x.split('@')[0])
 
         m_position = pd.concat(m_positions_df, ignore_index=True)
 
@@ -110,22 +104,23 @@ class Controller:
             if i not in position['label'].values:
                 raise FormatError
 
-        m_position = m_position.merge(position, left_on='position',
-                                      right_on='label')
-        m_position = m_position.filter(['member_id', 'id', 'year']) \
-            .rename(columns={'id': 'position_id'})
+        m_position = m_position.merge(
+            position, left_on='position', right_on='label'
+        )
+
+        m_position = m_position.filter(['member_id', 'id', 'year'])
 
         Controller.recreate_tables()
 
-        # write to sql
         position.to_sql(name='position', con=engine, if_exists='append',
                         index=False)
-        user.to_sql(name='user', con=engine, if_exists='append',
-                    index=False)
-        member.to_sql(name='member', con=engine, if_exists='append',
-                      index=False)
-        m_position.to_sql(name='member_position', con=engine,
-                          if_exists='append', index=False)
+
+        for mb in member.to_dict('records'):
+            # filter the member's positions
+            m_pos = m_position.loc[m_position['member_id'] == mb['id']]
+            mb['positions'] = \
+                m_pos.filter(['id', 'year']).to_dict('records')
+            MemberController.create_member(mb)
 
     @staticmethod
     def export_data():

@@ -32,9 +32,6 @@ def delete_image(member_id):
     image = find_image(member_id)
     if image:
         os.remove(os.path.join(UPLOAD_FOLDER, image))
-        return
-
-    raise NotFound
 
 
 def find_image(member_id):

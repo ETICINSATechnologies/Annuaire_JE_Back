@@ -43,6 +43,8 @@ class Member(Base):
     def update(self, new_values):
         for att_key, att_val in new_values.items():
             if hasattr(self, att_key):
+                if isinstance(att_val, str):
+                    att_val = att_val.lower()
                 setattr(self, att_key, att_val)
 
         if self.user and 'password' in new_values:
@@ -55,7 +57,7 @@ class Member(Base):
         username = unicodedata.normalize('NFD', username) \
             .encode('ascii', 'ignore')
 
-        self.user = User(username.decode('utf-8'))
+        self.user = User(username.decode('utf-8').replace(' ', '-'))
         self.user.update(password)
 
     def set_positions(self, positions):
