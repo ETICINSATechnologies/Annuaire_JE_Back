@@ -90,7 +90,7 @@ class Email:
         if not os.path.exists('credentials.json'):
             cls.status = 'no_json_credentials'
 
-        if not cls.creds or not cls.creds.valid:
+        elif not cls.creds or not cls.creds.valid:
             if cls.creds and cls.creds.expired \
                     and cls.creds.refresh_token:
                 cls.creds.refresh(Request())

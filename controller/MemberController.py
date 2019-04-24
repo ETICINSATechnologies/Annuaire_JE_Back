@@ -90,13 +90,14 @@ class MemberController:
                 for key in args[0].keys()
             }
 
-        if 'pageNumber' in args[0]:
+        if 'pageNumber' in attributes:
             page_number = int(attributes.pop('pageNumber'))
 
-        if 'pageSize' in args[0]:
+        if 'pageSize' in attributes:
             page_size = int(attributes.pop('pageSize'))
 
-        attributes['position_id'] = attributes.pop('positionId', None)
+        if 'positionId' in attributes:
+            attributes['position_id'] = attributes.pop('positionId')
 
         positions_params = {
             key: attributes.pop(key)
