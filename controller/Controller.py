@@ -95,7 +95,8 @@ class Controller:
         member = member.drop(list(member.filter(
             regex='year\d|position\d')), axis=1)
 
-        member['username'] = member['email'].apply(lambda x: x.split('@')[0])
+        member['username'] = member['email'].apply(
+            lambda x: x.split('@')[0])
 
         m_position = pd.concat(m_positions_df, ignore_index=True)
 
@@ -116,10 +117,13 @@ class Controller:
                         index=False)
 
         for mb in member.to_dict('records'):
+            # remove null value
+            mb = {k: v for k, v in mb.items() if not pd.isna(v)}
             # filter the member's positions
             m_pos = m_position.loc[m_position['member_id'] == mb['id']]
             mb['positions'] = \
                 m_pos.filter(['id', 'year']).to_dict('records')
+
             MemberController.create_member(mb)
 
     @staticmethod

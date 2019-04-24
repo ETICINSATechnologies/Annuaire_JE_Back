@@ -76,7 +76,7 @@ class MemberController:
             Member.id == member_id).one()
 
     @staticmethod
-    @pUnit.make_a_transaction
+    @pUnit.make_a_query
     def get_members(session, *args):
         attributes = {}
         page_number = 0
@@ -105,8 +105,10 @@ class MemberController:
             {'position_id', 'year'}.intersection(set(attributes.keys()))
         }
 
-        members = session.query(Member).filter_by(**attributes)\
-            .join(MemberPosition).filter_by(**positions_params)
+        members = session.query(Member).filter_by(**attributes)
+
+        if positions_params:
+            members.join(MemberPosition).filter_by(**positions_params)
 
         page = members.limit(page_size).offset(page_number * page_size)
 
@@ -149,6 +151,6 @@ class MemberController:
         session.delete(member)
 
     @staticmethod
-    @pUnit.make_a_transaction
+    @pUnit.make_a_query
     def get_positions(session, *args):
         return session.query(Position).all()

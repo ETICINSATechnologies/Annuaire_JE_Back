@@ -51,11 +51,11 @@ def make_a_transaction(old_function):
 
 
 def make_a_query(old_function):
-    def new_function(attr):
+    def new_function(*args):
         session = Session()
         response = None
         try:
-            obj = old_function(session, attr)
+            obj = old_function(session, *args)
             response = serialize(obj)
         except Exception as e:
             info_logger.error(e)
