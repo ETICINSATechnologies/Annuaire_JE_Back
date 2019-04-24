@@ -108,7 +108,8 @@ class MemberController:
         members = session.query(Member).filter_by(**attributes)
 
         if positions_params:
-            members.join(MemberPosition).filter_by(**positions_params)
+            members = members.join(MemberPosition)\
+                .filter_by(**positions_params)
 
         page = members.limit(page_size).offset(page_number * page_size)
 
