@@ -10,7 +10,7 @@ from entities.User import User
 from entities.Member import Member
 from entities.MemberPosition import MemberPosition
 from entities.Position import Position
-from util.send_email import Email
+# from util.send_email import Email
 from util.Exception import LoginError
 from util.encryption import jwt_encode, create_password
 from util.encryption import is_password_valid
