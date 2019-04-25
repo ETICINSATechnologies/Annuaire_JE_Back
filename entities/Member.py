@@ -63,10 +63,12 @@ class Member(Base):
         self.positions = []
         if positions:
             for position in positions:
-                member_position = MemberPosition(
-                    position['id'], position['year']
-                )
-                self.positions.append(member_position)
+                if 'id' in position and position['id'] \
+                        and 'year' in position and position['year']:
+                    member_position = MemberPosition(
+                        position['id'], position['year']
+                    )
+                    self.positions.append(member_position)
 
     @classmethod
     def get_attr(cls, attr_name):

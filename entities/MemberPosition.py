@@ -44,6 +44,7 @@ class MemberPosition(Base):
 
     def serialize(self):
         return {
+            'id': self.pos.id,
             'label': self.pos.label,
             'year': self.year
         }

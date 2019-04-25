@@ -301,5 +301,5 @@ def send_email_validation():
 
 
 if __name__ == '__main__':
-    # Controller.create_tables()
+    Controller.create_tables()
     app.run(debug=True, host='0.0.0.0')
