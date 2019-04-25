@@ -108,6 +108,19 @@ def is_admin(*args):
     return True
 
 
+def get_member_image(member_id):
+    image_location = find_image(member_id)
+    if image_location:
+        return send_from_directory(
+            safe_join(os.getcwd(), app.config['UPLOAD_FOLDER']),
+            image_location)
+    raise NotFound
+
+
+def get_my_id(authorization):
+    return is_connected(authorization)['id']
+
+
 @app.route('/')
 def index():
     return redirect(
@@ -138,6 +151,26 @@ def get_members():
     )()
 
 
+@app.route('/member/me', methods=['GET'])
+def get_connected_member():
+    return send_response(
+        lambda:
+        MemberController.get_member_by_id(
+            get_my_id(request.headers.get('Authorization'))
+        )
+    )()
+
+
+@app.route('/member/me', methods=['PUT'])
+def update_connected_member():
+    return send_response(
+        lambda:
+        MemberController.update_member(
+            get_my_id(request.headers.get('Authorization')),
+            request.get_json()),
+    )()
+
+
 @app.route('/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
     return send_response(
@@ -164,25 +197,45 @@ def delete_member(member_id):
     )()
 
 
+@app.route('/member/me/image', methods=['GET'])
+def get_connected_member_image():
+    return send_response(
+        lambda: get_member_image(
+            get_my_id(request.headers.get('Authorization'))
+        )
+    )()
+
+
+@app.route('/member/me/image', methods=['POST'])
+def update_connect_member_image():
+    if request.files.get('file'):
+        file = request.files['file']
+        return send_response(
+            lambda: save(file, get_my_id(
+                request.headers.get('Authorization')
+            ))
+        )()
+
+
+@app.route('/member/me/image', methods=['DELETE'])
+def delete_connected_member_image():
+    return send_response(
+        lambda: delete_image(get_my_id(
+            request.headers.get('Authorization')
+        ))
+    )()
+
+
 @app.route('/member/<int:member_id>/image', methods=['GET'])
 def get_image(member_id):
-    def get_member_image():
-        image_location = find_image(member_id)
-        if image_location:
-            return send_from_directory(
-                safe_join(os.getcwd(),
-                          app.config['UPLOAD_FOLDER']),
-                image_location)
-        raise NotFound
-
     return send_response(
-        lambda: get_member_image(),
+        lambda: get_member_image(member_id),
         is_connected, request.headers.get('Authorization')
     )()
 
 
 @app.route('/member/<int:member_id>/image', methods=['POST'])
-def update_profile_picture(member_id):
+def update_member_image(member_id):
     if request.files.get('file'):
         file = request.files['file']
         return send_response(
@@ -192,7 +245,7 @@ def update_profile_picture(member_id):
 
 
 @app.route('/member/<int:member_id>/image', methods=['DELETE'])
-def delete_profile_picture(member_id):
+def delete_member_image(member_id):
     return send_response(
         lambda: delete_image(member_id),
         is_own_resource, request.headers.get('Authorization'),
@@ -248,5 +301,5 @@ def send_email_validation():
 
 
 if __name__ == '__main__':
-    Controller.create_tables()
+    # Controller.create_tables()
     app.run(debug=True, host='0.0.0.0')

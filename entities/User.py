@@ -4,7 +4,7 @@
 from sqlalchemy import Column, Integer, String
 
 from util.db_config import Base
-from util.encryption import encrypt
+from util.encryption import encrypt, create_password
 
 
 class User(Base):
@@ -16,6 +16,7 @@ class User(Base):
 
     def __init__(self, username):
         self.username = username
+        self.password = create_password()
 
     def update(self, password):
         self.password = encrypt(password)

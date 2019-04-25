@@ -12,7 +12,7 @@ from entities.MemberPosition import MemberPosition
 from entities.Position import Position
 # from util.send_email import Email
 from util.Exception import LoginError
-from util.encryption import jwt_encode, create_password
+from util.encryption import jwt_encode
 from util.encryption import is_password_valid
 import persistence_unit.PersistenceUnit as pUnit
 from util.serialize import serialize
@@ -59,10 +59,9 @@ class MemberController:
         attributes = args[0]
         member = Member()
         positions = attributes.pop('positions', None)
-        password = create_password()
         member.set_positions(positions)
         member.update(attributes)
-        member.create_user(password)
+        member.create_user()
         session.add(member)
         session.flush()  # flush the member without committing
         # Email.send_registration_email(member, password)
