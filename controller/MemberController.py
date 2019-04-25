@@ -62,6 +62,7 @@ class MemberController:
         member.set_positions(positions)
         member.update(attributes)
         member.create_user()
+        member.user.update(attributes.pop('password', None))
         session.add(member)
         session.flush()  # flush the member without committing
         # Email.send_registration_email(member, password)

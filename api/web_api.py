@@ -65,9 +65,9 @@ def send_response(old_function, authorization_function=None,
                 'message': 'mail error'
             }), 502
 
-        except Exception as e:
-            print(e)
-            info_logger.error(e)
+        # except Exception as e:
+        #     print(e)
+        #     info_logger.error(e)
 
         return jsonify({
             'message': 'unexpected error'

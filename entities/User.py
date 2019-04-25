@@ -18,9 +18,9 @@ class User(Base):
         self.username = username
         self.password = create_password()
 
-    def update(self, password):
-        self.password = encrypt(password)
-        return self
+    def update(self, password=None):
+        if password:
+            self.password = encrypt(password)
 
     def serialize(self):
         return {

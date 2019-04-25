@@ -35,35 +35,6 @@ class Controller:
     def create_tables():
         Base.metadata.create_all(pUnit.engine)
         Controller.create_admin()
-        Controller.create_fake_user()
-
-    @staticmethod
-    @pUnit.make_a_transaction
-    def create_fake_user(session):
-        member_exist = session.query(Member).scalar() is not None
-        if not member_exist:
-            attributes = {
-                "firstName": "John",
-                "lastName": "Connor",
-                "email": "john.connor@terminator.com",
-                "birthday": "1967-01-20",
-                "gradeYear": 3,
-                "telephone": 116316425,
-                "positions": [{
-                    'id': 1,
-                    'year': 2014
-                }, {
-                    'id': 3,
-                    'year': 2018
-                }]
-            }
-            member = Member()
-            positions = attributes.pop('positions', None)
-            member.set_positions(positions)
-            member.update(attributes)
-            member.create_user()
-            member.user.update('password')
-            session.add(member)
 
     @staticmethod
     @pUnit.make_a_transaction
