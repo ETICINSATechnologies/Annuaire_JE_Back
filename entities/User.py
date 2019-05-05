@@ -18,7 +18,6 @@ class User(Base):
 
     def __init__(self, username):
         self.username = username
-        self.password = create_password()
 
     def update(self, password=None):
         if password:
