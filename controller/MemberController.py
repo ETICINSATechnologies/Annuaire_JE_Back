@@ -10,7 +10,7 @@ from entities.User import User
 from entities.Member import Member
 from entities.MemberPosition import MemberPosition
 from entities.Position import Position
-# from util.send_email import Email
+from util.send_email import Email
 from util.Exception import LoginError
 from util.encryption import jwt_encode
 from util.encryption import is_password_valid
@@ -38,7 +38,7 @@ class MemberController:
             user = session.query(User).filter(
                 User.username == username).one()
 
-            if is_password_valid(user.password, password):
+            if is_password_valid(user.password, user.temp_password, user.temp_refresh_time, password):
                 exp = time() + 24 * 3600
                 payload = {
                     'id': user.id,
@@ -152,11 +152,12 @@ class MemberController:
         member = session.query(Member) \
             .filter(Member.id == member_id).one()
 
-        member.user.update_temp_pass()
+        temp_password = member.user.update_temp_pass()
 
         session.add(member)
 
         # send email
+        Email.send_reset_email(member,temp_password)
 
         return member
 

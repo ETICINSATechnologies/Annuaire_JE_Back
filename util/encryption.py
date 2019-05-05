@@ -8,11 +8,13 @@ import hashlib
 import random
 import string
 import time
+import decimal
 
 from passlib.hash import pbkdf2_sha256
 
 from util.Exception import AuthError
 from util.VarConfig import VarConfig
+from util.log import info_logger
 
 
 def create_password():
@@ -20,19 +22,24 @@ def create_password():
             string.ascii_letters + string.digits) for i in range(15))
 
 def create_temp_password():
-    prefix =  ''.join(random.SystemRandom().choice(
-            string.ascii_letters + string.digits) for i in range(10))
-    timestamp = time.time()
-    delimiter = ';'
-    return delimiter.join(prefix,timestamp)
+    temp=  ''.join(random.SystemRandom().choice(
+            string.ascii_letters + string.digits) for i in range(15))
+    info_logger.error(temp)
+    return temp
 
 
 def encrypt(password):
     return pbkdf2_sha256.encrypt(password)
 
 
-def is_password_valid(hash_password, password):
-    return pbkdf2_sha256.verify(password, hash_password)
+def is_password_valid(hash_password, hash_temp_password, temp_refresh_time, password):
+    #return pbkdf2_sha256.verify(password, hash_password)
+    info_logger.error(hash_temp_password)
+    valid = pbkdf2_sha256.verify(password, hash_password)
+    if not valid : 
+        valid = (decimal.Decimal(time.time())-temp_refresh_time < 7200) and pbkdf2_sha256.verify(password, hash_temp_password)
+
+    return valid
 
 
 def jwt_encode(payload):

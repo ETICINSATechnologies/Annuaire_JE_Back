@@ -25,6 +25,9 @@ yearbook_url = VarConfig.get()['yearbook_url']
 with open('email_template', 'r', encoding='utf-8') as file:
     template_email = file.read()
 
+with open('reset_email_template', 'r', encoding='utf-8') as file:
+    reset_template_email = file.read()
+
 
 class EmailError(Exception):
     pass
@@ -55,6 +58,28 @@ class Email:
         message = cls.create_email(
             sender_email, email,
             f'{je_name} - Inscription annuaire des anciens',
+            message_text)
+
+        if not cls.service:
+            Email.set_status()
+            if not cls.service:
+                raise EmailError
+
+        cls.service.users().messages().send(
+            userId='me', body=message).execute()
+
+    @classmethod
+    def send_reset_email(cls, member, temp_password):
+        firstName = member.firstName
+        lastName = member.lastName
+        email = member.email
+        username = member.user.username
+
+        message_text = eval(f'f"""{reset_template_email}"""')
+
+        message = cls.create_email(
+            sender_email, email,
+            f'{je_name} - Annuaire des anciens - Reset mot de passe',
             message_text)
 
         if not cls.service:
