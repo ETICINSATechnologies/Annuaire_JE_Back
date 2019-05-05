@@ -7,6 +7,7 @@ import base64
 import hashlib
 import random
 import string
+import time
 
 from passlib.hash import pbkdf2_sha256
 
@@ -17,6 +18,13 @@ from util.VarConfig import VarConfig
 def create_password():
     return ''.join(random.SystemRandom().choice(
             string.ascii_letters + string.digits) for i in range(15))
+
+def create_temp_password():
+    prefix =  ''.join(random.SystemRandom().choice(
+            string.ascii_letters + string.digits) for i in range(10))
+    timestamp = time.time()
+    delimiter = ';'
+    return delimiter.join(prefix,timestamp)
 
 
 def encrypt(password):

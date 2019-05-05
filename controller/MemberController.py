@@ -145,6 +145,23 @@ class MemberController:
 
     @staticmethod
     @pUnit.make_a_transaction
+    def update_temp_pass(session, *args):
+        member_id = args[0]
+
+        # get member
+        member = session.query(Member) \
+            .filter(Member.id == member_id).one()
+
+        member.user.update_temp_pass()
+
+        session.add(member)
+
+        # send email
+
+        return member
+
+    @staticmethod
+    @pUnit.make_a_transaction
     def delete_member(session, *args):
         member_id = args[0]
         member = session.query(Member).filter(
