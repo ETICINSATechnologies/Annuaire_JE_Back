@@ -8,5 +8,6 @@ RUN pip install -r ./requirements.txt
 
 COPY . ./
 ENV PYTHONPATH /api
+EXPOSE 5000
 
-CMD python api/web_api.py
+CMD gunicorn -b 0.0.0.0:5000 api.web_api:app
