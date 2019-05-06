@@ -92,7 +92,7 @@ def decode_base64(string):
 
 
 if __name__ == '__main__':
-    print(jwt_decode(jwt_encode({
-        'id': 1,
-        'username': 'cool'
-    })))
+    print(create_password())
+    encrypt_password = encrypt('password')
+    print(is_password_valid(encrypt_password, 'password'))
+

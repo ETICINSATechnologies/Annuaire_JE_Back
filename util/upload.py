@@ -6,7 +6,7 @@ import re
 
 from flask import safe_join
 
-from util.Exception import FormatError, NotFound
+from util.Exception import FormatError
 
 UPLOAD_FOLDER = 'upload'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}

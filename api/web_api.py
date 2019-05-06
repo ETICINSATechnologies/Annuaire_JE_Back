@@ -65,9 +65,9 @@ def send_response(old_function, authorization_function=None,
                 'message': 'mail error'
             }), 502
 
-        # except Exception as e:
-        #     print(e)
-        #     info_logger.error(e)
+        except Exception as e:
+            print(e)
+            info_logger.error(e)
 
         return jsonify({
             'message': 'unexpected error'
@@ -121,21 +121,21 @@ def get_my_id(authorization):
     return is_connected(authorization)['id']
 
 
-@app.route('/')
+@app.route('/api/')
 def index():
     return redirect(
         'https://app.swaggerhub.com/apis/epsilon32/YearBook/v3.0.0#/'
     )
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login_member():
     return send_response(
         lambda: MemberController.login(request.get_json())
     )()
 
 
-@app.route('/member', methods=['POST'])
+@app.route('/api/member', methods=['POST'])
 def create_member():
     return send_response(
         lambda: MemberController.create_member(request.get_json()),
@@ -143,7 +143,7 @@ def create_member():
     )()
 
 
-@app.route('/member', methods=['GET'])
+@app.route('/api/member', methods=['GET'])
 def get_members():
     return send_response(
         lambda: MemberController.get_members(request.args),
@@ -151,7 +151,7 @@ def get_members():
     )()
 
 
-@app.route('/member/me', methods=['GET'])
+@app.route('/api/member/me', methods=['GET'])
 def get_connected_member():
     return send_response(
         lambda:
@@ -161,7 +161,7 @@ def get_connected_member():
     )()
 
 
-@app.route('/member/me', methods=['PUT'])
+@app.route('/api/member/me', methods=['PUT'])
 def update_connected_member():
     return send_response(
         lambda:
@@ -171,7 +171,7 @@ def update_connected_member():
     )()
 
 
-@app.route('/member/<int:member_id>', methods=['GET'])
+@app.route('/api/member/<int:member_id>', methods=['GET'])
 def get_member(member_id):
     return send_response(
         lambda:
@@ -180,7 +180,7 @@ def get_member(member_id):
     )()
 
 
-@app.route('/member/<int:member_id>', methods=['PUT'])
+@app.route('/api/member/<int:member_id>', methods=['PUT'])
 def update_member(member_id):
     return send_response(
         lambda:
@@ -197,7 +197,7 @@ def update_temp_pass(member_id):
 
 
 
-@app.route('/member/<int:member_id>', methods=['DELETE'])
+@app.route('/api/member/<int:member_id>', methods=['DELETE'])
 def delete_member(member_id):
     return send_response(
         lambda: MemberController.delete_member(member_id),
@@ -205,7 +205,7 @@ def delete_member(member_id):
     )()
 
 
-@app.route('/member/me/image', methods=['GET'])
+@app.route('/api/member/me/image', methods=['GET'])
 def get_connected_member_image():
     return send_response(
         lambda: get_member_image(
@@ -214,7 +214,7 @@ def get_connected_member_image():
     )()
 
 
-@app.route('/member/me/image', methods=['POST'])
+@app.route('/api/member/me/image', methods=['POST'])
 def update_connect_member_image():
     if request.files.get('file'):
         file = request.files['file']
@@ -225,7 +225,7 @@ def update_connect_member_image():
         )()
 
 
-@app.route('/member/me/image', methods=['DELETE'])
+@app.route('/api/member/me/image', methods=['DELETE'])
 def delete_connected_member_image():
     return send_response(
         lambda: delete_image(get_my_id(
@@ -234,7 +234,7 @@ def delete_connected_member_image():
     )()
 
 
-@app.route('/member/<int:member_id>/image', methods=['GET'])
+@app.route('/api/member/<int:member_id>/image', methods=['GET'])
 def get_image(member_id):
     return send_response(
         lambda: get_member_image(member_id),
@@ -242,7 +242,7 @@ def get_image(member_id):
     )()
 
 
-@app.route('/member/<int:member_id>/image', methods=['POST'])
+@app.route('/api/member/<int:member_id>/image', methods=['POST'])
 def update_member_image(member_id):
     if request.files.get('file'):
         file = request.files['file']
@@ -252,7 +252,7 @@ def update_member_image(member_id):
         )()
 
 
-@app.route('/member/<int:member_id>/image', methods=['DELETE'])
+@app.route('/api/member/<int:member_id>/image', methods=['DELETE'])
 def delete_member_image(member_id):
     return send_response(
         lambda: delete_image(member_id),
@@ -260,7 +260,7 @@ def delete_member_image(member_id):
     )()
 
 
-@app.route('/position', methods=['GET'])
+@app.route('/api/position', methods=['GET'])
 def get_position():
     return send_response(
         lambda: MemberController.get_positions(),
@@ -268,7 +268,7 @@ def get_position():
     )()
 
 
-@app.route('/yearbook/upload', methods=['POST'])
+@app.route('/api/yearbook/upload', methods=['POST'])
 def upload_file():
     if request.files.get('file'):
         file = request.files['file']
@@ -279,7 +279,7 @@ def upload_file():
     return jsonify({'message': 'missing file'}), 422
 
 
-@app.route('/yearbook/download', methods=['GET'])
+@app.route('/api/yearbook/download', methods=['GET'])
 def download():
     Controller.export_data()
     return send_response(
@@ -290,7 +290,7 @@ def download():
     )()
 
 
-@app.route('/email/status', methods=['GET'])
+@app.route('/api/email/status', methods=['GET'])
 def check_email_status():
     return send_response(
         lambda: Email.set_status(),
@@ -298,7 +298,7 @@ def check_email_status():
     )()
 
 
-@app.route('/email/validation', methods=['POST'])
+@app.route('/api/email/validation', methods=['POST'])
 def send_email_validation():
     if 'code' in request.form:
         return send_response(
