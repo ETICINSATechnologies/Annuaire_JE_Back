@@ -152,6 +152,7 @@ class MemberController:
         member = session.query(Member) \
             .filter(Member.id == member_id).one()
 
+        #put a try catch here in case memebr doesn't have a user
         temp_password = member.user.update_temp_pass()
 
         session.add(member)

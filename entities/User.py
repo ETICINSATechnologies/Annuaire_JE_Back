@@ -14,7 +14,7 @@ class User(Base):
     username = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
     temp_password = Column(String)
-    temp_refresh_time = Column (Numeric)
+    temp_refresh_time = Column(Numeric)
 
     def __init__(self, username):
         self.username = username
