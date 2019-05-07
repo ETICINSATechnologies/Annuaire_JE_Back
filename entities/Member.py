@@ -54,10 +54,6 @@ class Member(Base):
 
         return self
 
-    def check_identity(self, attributes):
-        return (attributes.pop(birthday,None).lower()==self.birthday.lower()) \
-            and (attributes.pop(firstName,None).lower()==self.firstName.lower())
-
     def create_user(self):
         username = f'{self.firstName.lower()}.{self.lastName.lower()}'
         username = unicodedata.normalize('NFD', username) \

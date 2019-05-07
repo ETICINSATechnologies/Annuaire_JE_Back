@@ -24,7 +24,6 @@ def create_password():
 def create_temp_password():
     temp=  ''.join(random.SystemRandom().choice(
             string.ascii_letters + string.digits) for i in range(15))
-    info_logger.error(temp)
     return temp
 
 

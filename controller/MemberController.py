@@ -11,11 +11,12 @@ from entities.Member import Member
 from entities.MemberPosition import MemberPosition
 from entities.Position import Position
 from util.send_email import Email
-from util.Exception import LoginError
+from util.Exception import LoginError,NotFound
 from util.encryption import jwt_encode, create_password
 from util.encryption import is_password_valid
 import persistence_unit.PersistenceUnit as pUnit
 from util.serialize import serialize
+from util.log import info_logger
 
 
 class MemberController:
@@ -149,22 +150,19 @@ class MemberController:
     @staticmethod
     @pUnit.make_a_transaction
     def update_temp_pass(session, *args):
-        response = False
-        member_id = args[0]
-        attributes = args[1]
+        member_email = args[0].pop('email',None)
+        info_logger.error(member_email)
 
-        # get member
         member = session.query(Member) \
-            .filter(Member.id == member_id).one()
+            .filter(Member.email == member_email).one()
 
-        # check identity, reset temp pass and send email
-        if member.check_identity(attributes):
+        if not member: 
+            raise NotFound
+        else:
             temp_password = member.user.update_temp_pass()
             session.add(member)
             Email.send_reset_email(member,temp_password)
-            response = True
-
-        return response
+            
 
     @staticmethod
     @pUnit.make_a_transaction
