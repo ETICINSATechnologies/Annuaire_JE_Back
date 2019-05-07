@@ -188,13 +188,13 @@ def update_member(member_id):
         is_own_resource, request.headers.get('Authorization'), member_id
     )()
 
-@app.route('/resetmember/<int:member_id>', methods=['POST'])
-def update_temp_pass(member_id):
+
+@app.route('/api/member/reset', methods=['POST'])
+def update_temp_pass():
     return send_response(
         lambda:
-        MemberController.update_temp_pass(member_id)
+        MemberController.update_temp_pass(request.get_json())
     )()
-
 
 
 @app.route('/api/member/<int:member_id>', methods=['DELETE'])

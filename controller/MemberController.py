@@ -11,11 +11,12 @@ from entities.Member import Member
 from entities.MemberPosition import MemberPosition
 from entities.Position import Position
 from util.send_email import Email
-from util.Exception import LoginError
+from util.Exception import LoginError, NotFound
 from util.encryption import jwt_encode, create_password
 from util.encryption import is_password_valid
 import persistence_unit.PersistenceUnit as pUnit
 from util.serialize import serialize
+from util.log import info_logger
 
 
 class MemberController:
@@ -38,7 +39,7 @@ class MemberController:
             user = session.query(User).filter(
                 User.username == username).one()
 
-            if is_password_valid(user.password, user.temp_password, user.temp_refresh_time, password):
+            if is_password_valid(user, password):
                 exp = time() + 24 * 3600
                 payload = {
                     'id': user.id,
@@ -111,7 +112,7 @@ class MemberController:
         members = session.query(Member).filter_by(**attributes)
 
         if positions_params:
-            members = members.join(MemberPosition)\
+            members = members.join(MemberPosition) \
                 .filter_by(**positions_params)
 
         page = members.limit(page_size).offset(page_number * page_size)
@@ -149,21 +150,18 @@ class MemberController:
     @staticmethod
     @pUnit.make_a_transaction
     def update_temp_pass(session, *args):
-        member_id = args[0]
+        member_email = args[0].pop('email', None)
+        info_logger.error(member_email)
 
-        # get member
         member = session.query(Member) \
-            .filter(Member.id == member_id).one()
+            .filter(Member.email == member_email).one()
 
-        #put a try catch here in case memebr doesn't have a user
-        temp_password = member.user.update_temp_pass()
-
-        session.add(member)
-
-        # send email
-        Email.send_reset_email(member,temp_password)
-
-        return member
+        if not member:
+            raise NotFound
+        else:
+            temp_password = member.user.update_temp_pass()
+            session.add(member)
+            Email.send_reset_email(member, temp_password)
 
     @staticmethod
     @pUnit.make_a_transaction

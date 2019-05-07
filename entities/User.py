@@ -4,7 +4,8 @@
 from sqlalchemy import Column, Integer, String, Numeric
 from time import time
 from util.db_config import Base
-from util.encryption import encrypt, create_password, create_temp_password
+from util.encryption import encrypt, create_password, \
+    create_temp_password
 
 
 class User(Base):
@@ -23,11 +24,10 @@ class User(Base):
         if password:
             self.password = encrypt(password)
 
-
     def update_temp_pass(self):
         temp_pass = create_temp_password()
         self.temp_password = encrypt(temp_pass)
-        self.temp_refresh_time=time()
+        self.temp_refresh_time = time()
         return temp_pass
 
     def serialize(self):
@@ -35,4 +35,3 @@ class User(Base):
             'username': self.username,
             'password': self.password
         }
-
