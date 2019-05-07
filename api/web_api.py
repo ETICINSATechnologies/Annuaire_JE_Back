@@ -188,7 +188,8 @@ def update_member(member_id):
         is_own_resource, request.headers.get('Authorization'), member_id
     )()
 
-@app.route('/api/resetmember/', methods=['POST'])
+
+@app.route('/api/member/reset', methods=['POST'])
 def update_temp_pass():
     return send_response(
         lambda:
