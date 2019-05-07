@@ -1,0 +1,7 @@
+Bonjour {firstName} {lastName},
+Un mot de passe temporaire vient d'être généré pour accéder votre compte !
+Utilisez ceci pour accéder à votre compte :
+- password: {temp_password}
+Connectez-vous sur le site {yearbook_url} pour modifier votre mot de passe et accéder aux services de l'annuaire
+Attention, ce mot de passe temporaire ne sera valable que pendant 2 heures !
+Vous n'avez pas fait cette demande ? Contactez toute de suite l'administrateur du site.
