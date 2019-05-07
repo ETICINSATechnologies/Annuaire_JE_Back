@@ -32,12 +32,11 @@ def encrypt(password):
     return pbkdf2_sha256.encrypt(password)
 
 
-def is_password_valid(hash_password, hash_temp_password, temp_refresh_time, password):
-    #return pbkdf2_sha256.verify(password, hash_password)
-    info_logger.error(hash_temp_password)
-    valid = pbkdf2_sha256.verify(password, hash_password)
+def is_password_valid(user, password):
+    valid = pbkdf2_sha256.verify(password, user.password)
     if not valid : 
-        valid = (decimal.Decimal(time.time())-temp_refresh_time < 7200) and pbkdf2_sha256.verify(password, hash_temp_password)
+        valid = (decimal.Decimal(time.time())-user.temp_refresh_time < 7200) and\
+             pbkdf2_sha256.verify(password, user.temp_password)
 
     return valid
 

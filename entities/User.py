@@ -27,7 +27,7 @@ class User(Base):
     def update_temp_pass(self):
         temp_pass = create_temp_password()
         self.temp_password = encrypt(temp_pass)
-        self.temp_refresh_time=time()
+        self.temp_refresh_time = time()
         return temp_pass
 
     def serialize(self):
