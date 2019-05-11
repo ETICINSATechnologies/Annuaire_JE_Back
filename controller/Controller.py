@@ -117,6 +117,8 @@ class Controller:
         position.to_sql(name='position', con=engine, if_exists='append',
                         index=False)
 
+        error_members=[]
+
         for mb in member.to_dict('records'):
             # remove null value
             mb = {k: v for k, v in mb.items() if not pd.isna(v)}
@@ -125,7 +127,16 @@ class Controller:
             mb['positions'] = \
                 m_pos.filter(['id', 'year']).to_dict('records')
 
-            MemberController.create_member(mb)
+            try:
+                MemberController.create_member(mb)
+            except:
+                error_members.append(mb)
+                
+        stats={
+            'totalMembers' : len(member),
+            'errorMembers' : len(error_members)
+        }
+        return stats
 
     @staticmethod
     def export_data():
