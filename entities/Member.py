@@ -54,12 +54,16 @@ class Member(Base):
 
         return self
 
-    def create_user(self):
+    def make_username(self):
         username = f'{self.firstName.lower()}.{self.lastName.lower()}'
         username = unicodedata.normalize('NFD', username) \
             .encode('ascii', 'ignore')
+        username = username.decode('utf-8').replace(' ', '-')
 
-        self.user = User(username.decode('utf-8').replace(' ', '-'))
+        return username
+
+    def create_user(self,username):
+        self.user = User(username)
 
     def set_positions(self, positions):
         self.positions = []

@@ -65,7 +65,14 @@ class MemberController:
         member = Member()
         member.set_positions(positions)
         member.update(attributes)
-        member.create_user()
+
+        # make username and check existence
+        username=member.make_username()
+        user_count = session.query(User) \
+            .filter(User.username.startswith(username)).count()
+        if not (user_count==0): username= username+'.'+str(user_count)
+
+        member.create_user(username)
         member.user.update(password)
         session.add(member)
         session.flush()  # flush the member without committing
